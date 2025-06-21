@@ -72,6 +72,7 @@ if __name__ == "__main__":
             auth=getAuth(regenerate=args.regen, second_factor='trusted_device' if args.trusteddevice else 'sms'),
             headers=generate_anisette_headers(),
             json=data)
+    print(r)
     res = json.loads(r.content.decode())['results']
     print(f'{r.status_code}: {len(res)} reports received.')
 
@@ -84,7 +85,7 @@ if __name__ == "__main__":
 
         # the following is all copied from https://github.com/hatomist/openhaystack-python, thanks @hatomist!
         timestamp = int.from_bytes(data[0:4], 'big') +978307200
-        sq3.execute(f"INSERT OR REPLACE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report['datePublished']}, '{report['payload']}', '{report['id']}', {report['statusCode']})")
+        # sq3.execute(f"INSERT OR REPLACE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report['datePublished']}, '{report['payload']}', '{report['id']}', {report['statusCode']})")
         if timestamp >= startdate:
             eph_key = ec.EllipticCurvePublicKey.from_encoded_point(ec.SECP224R1(), data[5:62])
             shared_key = ec.derive_private_key(priv, ec.SECP224R1(), default_backend()).exchange(ec.ECDH(), eph_key)
@@ -104,7 +105,8 @@ if __name__ == "__main__":
             ordered.append(tag)
     print(f'{len(ordered)} reports used.')
     ordered.sort(key=lambda item: item.get('timestamp'))
-    for rep in ordered: print(rep)
+    for rep in ordered: print(f"INSERT OR REPLACE INTO reports VALUES ('{rep['key']}', {rep['timestamp']}, '{rep['isodatetime']}', '{rep['lat']}', '{rep['lon']}', '{rep['goog']}', {rep['status']}, {rep['conf']})")
+    for rep in ordered: sq3.execute(f"INSERT OR REPLACE INTO reports VALUES ('{rep['key']}', {rep['timestamp']}, '{rep['isodatetime']}', '{rep['lat']}', '{rep['lon']}', '{rep['goog']}', {rep['status']}, {rep['conf']})")
     print(f'found:   {list(found)}')
     print(f'missing: {[key for key in names.values() if key not in found]}')
     sq3.close()
