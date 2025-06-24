@@ -1,28 +1,42 @@
 import os.path, base64, tkinter as tk
+import sqlite3
 import subprocess
 
 from serial.tools import list_ports
-from tkinter import simpledialog
+from tkinter import simpledialog, messagebox
 from FindMyIntegration.request_reports import request_reports
 import threading
+from multiprocessing import Process
 
 import deploy
 from FindMyIntegration.generate_key import writeKey
 
 tags = {}
 parent = None
+locations = {}
+mapUI = None
 
 def setParent(parentIn):
     global parent
     parent = parentIn
 
-def NewKey():
+def setMapUI(mapIn):
+    global mapUI
+    mapUI = mapIn
+
+def newKey():
     keyName = simpledialog.askstring("New tag", "Please enter a name for the new tag:")
     if keyName is not None and keyName != "":
         writeKey(keyName)
-    LoadTags()
+    loadTags()
 
-def LoadTags():
+def delKey(name):
+    result = messagebox.askyesno("Delete tag", f"Are you sure you want to delete: {name.replace(".keys", "")}")
+    if result:
+        os.remove(os.path.join("keys", name))
+        loadTags()
+
+def loadTags():
     global tags
     global parent
     for sel in tags.values():
@@ -39,12 +53,54 @@ def LoadTags():
 def renameTag(oldName, newName):
     return
 
+anisette = None
 def getLocations(user='', pswd='', useSMS=False):
-    print("committing bruh")
-    os.remove("reports.db")
-    subprocess.run("sqlite3 reports.db \"CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished TEXT, lat INTEGER, lon INTEGER, link TEXT, statusCode INTEGER, conf INTEGER)\"")
-    threading.Thread(target=lambda:subprocess.run("wsl ./anisette-v3-server/anisette-v3-server"), daemon=True).start()
-    threading.Thread(target=request_reports, daemon=True).start()
+    global anisette
+    if anisette is None:
+        def start_anisette():
+            global anisette
+            print("started anisette")
+            anisette = subprocess.Popen(["wsl", "./anisette-v3-server/anisette-v3-server"])
+            anisette.wait()
+            anisette = None
+            displayLocations()
+
+        print("committing bruh")
+        if os.path.exists("reports.db"): os.remove("reports.db")
+        subprocess.run("sqlite3 reports.db \"CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished TEXT, lat INTEGER, lon INTEGER, link TEXT, statusCode INTEGER, conf INTEGER)\"")
+
+        threading.Thread(target=start_anisette, daemon=True).start()
+
+        t = threading.Timer(1, lambda: threading.Thread(target=request_reports, args=(anisette, user, pswd, useSMS), daemon=True).start())
+        t.start()
+    else:
+        print("Bruh wait lol")
+
+def displayLocations():
+    global locations
+
+    # Connect to the SQLite database (or create it if it doesn't exist)
+    conn = sqlite3.connect('reports.db')
+    cursor = conn.cursor()
+
+    # Execute a SELECT query to retrieve data
+    cursor.execute('SELECT * FROM reports')
+
+    # Fetch all the results
+    data = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    locations = {}
+    for row in data:
+        name = row[0]
+        if name not in locations or row[1] > locations[name][1]:
+            locations[name] = row
+
+    for item in locations.values():
+        mapUI.set_marker(item[3], item[4], text=item[0])
+        tags[f"{item[0]}.keys"].status.configure(fg="green")
 
 
 class Tag:
@@ -56,6 +112,9 @@ class Tag:
         self.status = tk.Label(self.container, text = "•", font=("Courier New ", 30), bg="white", fg="red")
         self.title = tk.Label(self.container, text = f"{self.name}", font=("Courier New ", 10), bg="white")
         self.deployButton = tk.Button(self.container, text = "Deploy", font=("Courier New ", 10), bg="white", command=lambda: deploy.deployPopup(parent, self))
+        self.menu = tk.Menu(self.container, tearoff=False)
+        self.menu.add_command(label="Delete tag", command=lambda: delKey(self.name + ".keys"))
+        self.menu.add_command(label="Copy advertisement key", command=lambda: self.container.clipboard_append(self.advKey))
 
     def setStatus(self, status: int):
         self.status = status
@@ -68,3 +127,11 @@ class Tag:
         self.status.pack(side = "left")
         self.title.pack(side = "left")
         self.deployButton.pack(side = "right", padx = 5)
+
+        def do_popup(event):
+            try:
+                self.menu.tk_popup(event.x_root, event.y_root)
+            finally:
+                self.menu.grab_release()
+
+        self.container.bind("<Button-3>", do_popup)

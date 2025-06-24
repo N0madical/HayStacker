@@ -3,12 +3,6 @@ setlocal enabledelayedexpansion
 
 echo Welcome to HayStacker^^!
 
-@REM ### Check if WSL is installed. It is needed to run linux commands on windows. Install it if not
-where wsl >nul 2>&1
-if %errorlevel% neq 0 (
-    call:wslNotInstalled
-) 
-
 wsl -l -q | findstr "U.b.u.n.t.u" >nul 2>nul
 if %errorlevel% equ 0 (
     echo Ubuntu is installed in WSL. Launching!

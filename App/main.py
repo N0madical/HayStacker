@@ -3,8 +3,8 @@ import os
 from shutil import which
 from tkinter import *
 import tag_manager, scroll_window, account_manager
-from tag_manager import NewKey, LoadTags
-import tkintermapview
+from tag_manager import newKey
+import tkintermapview, subprocess
 
 # main tkinter window
 root = Tk()
@@ -38,7 +38,7 @@ logo.pack(side="left", padx=(10,5))
 title = Label(headFrame, text = "HayStacker", font=("Lexend", 13), bg=UIBG)
 title.pack(side = "left")
 
-deployButton = Button(headFrame, image=plus_image, bg=UIBG, borderwidth=0, command=NewKey)
+deployButton = Button(headFrame, image=plus_image, bg=UIBG, borderwidth=0, command=newKey)
 deployButton.pack(side = "right", padx=10)
 
 # deployButton = Button(headFrame, text = "Login to Apple", font=("Courier New ", 10), bg="white", command=lambda:account_manager.passwordDialog(root))
@@ -97,9 +97,13 @@ map_widget.set_position(38.4502257, -100.3839858)
 map_widget.set_zoom(4)
 map_widget.pack(side="top", fill="both", expand=True)
 
+tag_manager.setMapUI(map_widget)
+
 ######
 
-tag_manager.LoadTags()
+tag_manager.loadTags()
 
 # Loop and run the window
 mainloop()
+
+subprocess.run("wsl killall anisette-v3-server")

@@ -6,7 +6,7 @@ from serial.tools import list_ports
 def createKey(name):
     open(f"{name}.yaml", "w").close()
     runpy.run_path("FindMyIntegration\\generate_key.py")
-    tag_manager.LoadTags()
+    tag_manager.loadTags()
 
 def getPortNames(advanced):
     usb_ports = []
