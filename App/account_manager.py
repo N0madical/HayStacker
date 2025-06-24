@@ -2,13 +2,16 @@
 # HayStacker Apple account login dialog
 # Developed by Aiden C
 # This script does not store or share your password
-# I've made the most effort to make this script transparent for your reading pleasure if you wish
+# I've made the most effort to make this script simple for your reading pleasure
 # ------
 
+import re #Regex matching, for moderating text box input
 import tkinter as tk #python tkinter GUI library
+from FindMyIntegration.pypush_gsa_icloud import set_callback # Allows us to define a GUI for entering a 2FA code
+from tag_manager import getLocations # The function that retrieves and displays tag locations
 
 # Main password dialog function
-def passwordDialog(parent):
+def loginDialog(parent):
     popupWindow = tk.Toplevel()
     popupWindow.title("Login")
 
@@ -16,7 +19,8 @@ def passwordDialog(parent):
 
     def login():
         if email.get() != "" and pswd.get() != "":
-            attemptLogin(email.get(), pswd.get(), useSms.get())
+            getLocations(email.get(), pswd.get(), bool(useSms.get()))
+            popupWindow.destroy()
         else:
             badColor = "wheat1"
             if email.get() == "":
@@ -61,11 +65,34 @@ def passwordDialog(parent):
     tryLogin.pack(side="top", pady=(5,10))
 
 
-def authDialog(parent):
+def authDialog():
     popupWindow = tk.Toplevel()
     popupWindow.title("Auth code")
 
-    popupWindow.transient(parent)  # Sets the main window as the parent
+    header = tk.Label(popupWindow, text="Apple auth code", font=("Arial", 15))
+    header.pack(side="top")
+
+    def validate(event):
+        value = code.get()
+        value = re.sub("[^0-9]", "", value)
+        code.delete(0, tk.END)
+        code.insert(0, value[0:5])
+
+    def submit():
+        value = code.get()
+        if len(value) == 6 and value.isdigit():
+            return value
+
+    codeHeader = tk.Label(popupWindow, text="6 numbers...", font=("Arial", 8))
+    code = tk.Entry(popupWindow, width=6, font=("Arial", 15))
+    code.bind('<Key>', validate)
+    codeHeader.pack(side="top", pady=(10, 0))
+    code.pack(side="top", pady=(0, 5))
+
+    tryLogin = tk.Button(popupWindow, text="Submit", command=submit)
+    tryLogin.pack(side="top", pady=(5, 10))
+
+set_callback(authDialog)
 
 
 def attemptLogin(username, pswd, useSMS):

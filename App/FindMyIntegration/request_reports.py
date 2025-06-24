@@ -5,9 +5,9 @@ import hashlib,codecs,struct
 import requests
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.backends import default_backend
 import sqlite3
-from pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
+from os.path import dirname, join, abspath
+from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
 
 def sha256(data):
     digest = hashlib.new("sha256")
@@ -15,7 +15,7 @@ def sha256(data):
     return digest.digest()
 
 def decrypt(enc_data, algorithm_dkey, mode):
-    decryptor = Cipher(algorithm_dkey, mode, default_backend()).decryptor()
+    decryptor = Cipher(algorithm_dkey, mode).decryptor()
     return decryptor.update(enc_data) + decryptor.finalize()
 
 def decode_tag(data):
@@ -25,8 +25,8 @@ def decode_tag(data):
     status = int.from_bytes(data[9:10], 'big')
     return {'lat': latitude, 'lon': longitude, 'conf': confidence, 'status':status}
 
-def getAuth(username, password, regenerate=False, second_factor='sms'):
-    CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + "/auth.json"
+def getAuth(username='', password='', regenerate=False, second_factor='sms'):
+    CONFIG_PATH = abspath("auth.json")
     if os.path.exists(CONFIG_PATH) and not regenerate:
         with open(CONFIG_PATH, "r") as f: j = json.load(f)
     else:
@@ -36,7 +36,7 @@ def getAuth(username, password, regenerate=False, second_factor='sms'):
     return (j['dsid'], j['searchPartyToken'])
 
 
-def request_reports(username: str, password: str, useSMS: bool, hours=0, regen=False):
+def request_reports(username='', password='', useSMS=False, hours=24, regen=False):
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-H', '--hours', help='only show reports not older than these hours', type=int, default=24)
     # parser.add_argument('-p', '--prefix', help='only use keyfiles starting with this prefix', default='')
@@ -44,18 +44,18 @@ def request_reports(username: str, password: str, useSMS: bool, hours=0, regen=F
     # parser.add_argument('-t', '--trusteddevice', help='use trusted device for 2FA instead of SMS', action='store_true')
     # args = parser.parse_args()
 
-    sq3db = sqlite3.connect(os.path.dirname(os.path.realpath(__file__)) + '/reports.db')
+    sq3db = sqlite3.connect(abspath("reports.db"), timeout=10)
     sq3 = sq3db.cursor()
 
     privkeys = {}
     names = {}
-    for keyfile in glob.glob(os.path.join(os.path.abspath("keys"), '*.keys')):
+    for keyfile in glob.glob(join(dirname(dirname(abspath(__file__))), "keys", '*.keys')):
         # read key files generated with generate_keys.py
         with open(keyfile) as f:
             hashed_adv = priv = ''
             name = os.path.basename(keyfile)[0:-5]
             for line in f:
-                key = line.rstrip('\n').split(': ')
+                key = line.strip().split(': ')
                 if key[0] == 'Private key': priv = key[1]
                 elif key[0] == 'Hashed adv key': hashed_adv = key[1]
 
@@ -80,7 +80,7 @@ def request_reports(username: str, password: str, useSMS: bool, hours=0, regen=F
     found = set()
     for report in res:
         priv = int.from_bytes(base64.b64decode(privkeys[report['id']]), 'big')
-        data = base64.b64decode(report['payload'])
+        data = base64.b64decode(report['payload'].replace('\n', '').replace('\r', ''))
         if len(data) > 88: data = data[:4] + data[5:]
 
         # the following is all copied from https://github.com/hatomist/openhaystack-python, thanks @hatomist!
@@ -88,7 +88,7 @@ def request_reports(username: str, password: str, useSMS: bool, hours=0, regen=F
         # sq3.execute(f"INSERT OR REPLACE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report['datePublished']}, '{report['payload']}', '{report['id']}', {report['statusCode']})")
         if timestamp >= startdate:
             eph_key = ec.EllipticCurvePublicKey.from_encoded_point(ec.SECP224R1(), data[5:62])
-            shared_key = ec.derive_private_key(priv, ec.SECP224R1(), default_backend()).exchange(ec.ECDH(), eph_key)
+            shared_key = ec.derive_private_key(priv, ec.SECP224R1()).exchange(ec.ECDH(), eph_key)
             symmetric_key = sha256(shared_key + b'\x00\x00\x00\x01' + data[5:62])
             decryption_key = symmetric_key[:16]
             iv = symmetric_key[16:]
@@ -112,5 +112,3 @@ def request_reports(username: str, password: str, useSMS: bool, hours=0, regen=F
     sq3.close()
     sq3db.commit()
     sq3db.close()
-
-request_reports("nomadicalyt@gmail.com", "xxtra!Ga1mn2", True, 0, True)

@@ -73,7 +73,7 @@ def deployPopup(parent, tag):
     # Add control buttons
     deployButton = tk.Button(popupWindow, text="Deploy to USB Device", command=startDeploy)
 
-    closeButton = tk.Button(popupWindow, text="Close", command=popupWindow.destroy)
+    closeButton = tk.Button(popupWindow, text="Cancel", command=popupWindow.destroy)
     closeButton.pack(pady=5)
 
     # Bind listbox select

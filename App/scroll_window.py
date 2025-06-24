@@ -26,7 +26,7 @@ class ScrollableFrame(ttk.Frame):
         self.canvas.configure(yscrollcommand=vscroll.set)
 
         # ---- 2. this frame lives *inside* the canvas --------------------
-        self.content_frame = ttk.Frame(self.canvas)
+        self.content_frame = tk.Frame(self.canvas)
 
         # ---- 3. put the internal frame in a canvas window --------------
         self.canvas_window = self.canvas.create_window((0, 0), anchor="nw",

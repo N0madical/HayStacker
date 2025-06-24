@@ -15,6 +15,9 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from Crypto.Hash import SHA256
 
+# Callback GUI
+SECOND_FACTOR_CALLBACK = None
+
 # Created here so that it is consistent
 USER_ID = uuid.uuid4()
 DEVICE_ID = uuid.uuid4()
@@ -27,14 +30,9 @@ srp.no_username_in_x()
 import urllib3
 urllib3.disable_warnings()
 
-ANISETTE_URL = 'http://localhost:6969'  # https://github.com/Dadoum/anisette-v3-server
+ANISETTE_URL = 'http://127.0.0.1:6969'  # https://github.com/Dadoum/anisette-v3-server
 
-def icloud_login_mobileme(username='', password='', second_factor='sms'):
-    if not username:
-        username = input('Apple ID: ')
-    if not password:
-        password = getpass('Password: ')
-
+def icloud_login_mobileme(username, password, second_factor='sms'):
     g = gsa_authenticate(username, password, second_factor)
     pet = g["t"]["com.apple.gs.idms.pet"]["token"]
     adsid = g["adsid"]
@@ -155,12 +153,16 @@ def generate_cpd():
     cpd.update(generate_anisette_headers())
     return cpd
 
+_ani_headers = None
 def generate_anisette_headers():
-    print(f'Querying {ANISETTE_URL} for an anisette server')
-    h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
-    a = {"X-Apple-I-MD": h["X-Apple-I-MD"], "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
-    a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))
-    return a
+    global _ani_headers
+    if _ani_headers is None:
+        print(f'Querying {ANISETTE_URL} for an anisette server')
+        h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
+        a = {"X-Apple-I-MD": h["X-Apple-I-MD"], "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
+        a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))
+        _ani_headers = a
+    return _ani_headers
 
 def generate_meta_headers(serial="0", user_id=uuid.uuid4(), device_id=uuid.uuid4()):
     return {
@@ -201,6 +203,10 @@ def decrypt_cbc(usr, data):
     padder = padding.PKCS7(128).unpadder()
     return padder.update(data) + padder.finalize()
 
+def set_callback(func):
+    global SECOND_FACTOR_CALLBACK
+    SECOND_FACTOR_CALLBACK = func
+
 def trusted_second_factor(dsid, idms_token):
     identity_token = base64.b64encode((dsid + ":" + idms_token).encode()).decode()
 
@@ -228,7 +234,10 @@ def trusted_second_factor(dsid, idms_token):
     )
 
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
-    code = getpass("Enter 2FA code: ")
+    if callable(SECOND_FACTOR_CALLBACK):
+        code = SECOND_FACTOR_CALLBACK()
+    else:
+        code = getpass("Enter 2FA code: ")
     headers["security-code"] = code
 
     # Send the 2FA code to Apple

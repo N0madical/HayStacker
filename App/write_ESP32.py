@@ -1,5 +1,6 @@
 import tkinter as tk
 import subprocess, threading, base64, os
+from threadedCommand import run_command
 
 def write(port, advKey):
     popupWindow = tk.Toplevel()
@@ -13,37 +14,6 @@ def write(port, advKey):
 
     # Make the popup modal (prevents interaction with main window)
     popupWindow.grab_set()
-
-    def run_command(command, returnFunc):
-        """Run command in a thread and pipe output to a Tkinter text box."""
-
-        def task():
-            try:
-                process = subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    shell=True,
-                    text=True,  # so we get strings, not bytes
-                    bufsize=1  # line-buffered
-                )
-
-                for line in process.stdout:
-                    # Safe update of text widget using .after()
-                    text_output.after(0, output, line)
-
-                process.stdout.close()
-                process.wait()
-            except Exception as e:
-                text_output.after(0, output, "--- Command failed with error ---\n" + str(e))
-            else:
-                if process.returncode != 0:
-                    text_output.after(0, output, "--- Command failed ---")
-                else:
-                    text_output.after(0, output, "--- Command finished ---")
-                    returnFunc()
-
-        threading.Thread(target=task, daemon=True).start()
 
     def output(string):
         text_output.insert(tk.END, str(string).strip() + "\n")
@@ -60,6 +30,8 @@ def write(port, advKey):
                         0x8000  \"{partitionTable}\" \
                         0xe000  \"{keyPath}\" \
                         0x10000 \"{openhaystackBinary}\"",
+                        text_output,
+                        output,
                         lambda: output("-----\nyay! All done!"))
         except Exception as e:
             output("Failed to write to ESP32: " + str(e))
@@ -92,6 +64,6 @@ def write(port, advKey):
             try:
                 output("--- Erasing ESP32 ---")
                 output("DO NOT UNPLUG OR CLOSE")
-                run_command(f"esptool --after no_reset --port {port} erase_region 0x9000 0x5000", writeBinaries)
+                run_command(f"esptool --after no_reset --port {port} erase_region 0x9000 0x5000", text_output, output, writeBinaries)
             except Exception as e:
                 output("Failed to erase ESP32: " + str(e))
