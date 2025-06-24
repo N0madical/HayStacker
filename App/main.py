@@ -2,7 +2,7 @@
 from shutil import which
 from tkinter import *
 import deploy
-import tag_manager, scroll_window
+import tag_manager, scroll_window, account_manager
 from FindMyIntegration import generate_key
 from FindMyIntegration.generate_key import writeKey
 from deploy import createKey
@@ -33,8 +33,11 @@ title.pack(side = "top")
 welcome = Label(UIFrame, text = "No Locations Found...", font=("Courier New ", 10), bg=UIBG)
 welcome.pack(side = "top")
 
+deployButton = Button(UIFrame, text = "Login to Apple", font=("Courier New ", 10), bg="white", command=lambda:account_manager.passwordDialog(root))
+deployButton.pack(side = "top", pady = (15, 5))
+
 deployButton = Button(UIFrame, text = "Create New Tag", font=("Courier New ", 10), bg="white", command=NewKey)
-deployButton.pack(side = "top", pady=30)
+deployButton.pack(side = "top", pady= (5, 15))
 
 scrollable = scroll_window.ScrollableFrame(UIFrame, padding=5)
 scrollable.pack(fill="both", expand=True)

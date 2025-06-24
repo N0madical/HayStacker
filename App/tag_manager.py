@@ -16,10 +16,13 @@ def NewKey():
     keyName = simpledialog.askstring("New Key", "Please enter a name for the new tag:")
     if keyName is not None and keyName != "":
         writeKey(keyName)
+    LoadTags()
 
 def LoadTags():
     global tags
     global parent
+    for sel in tags.values():
+        sel.destroy()
     tags = {}
     names = os.listdir("keys")
     for name in names:
@@ -28,7 +31,6 @@ def LoadTags():
         tags[name] = Tag(parent, name.replace(".keys", ""), 0, advKey)
         tags[name].pack()
         keys.close()
-    print(tags)
 
 def renameTag(oldName, newName):
     return

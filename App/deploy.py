@@ -33,7 +33,6 @@ def deployPopup(parent, tag):
     # Create a Toplevel window for the popup
     popupWindow = tk.Toplevel()
     popupWindow.title("Deploy")
-    popupWindow.geometry("275x385")
 
     def loadPorts(advanced):
         listbox.delete(0, tk.END)
@@ -56,7 +55,7 @@ def deployPopup(parent, tag):
 
     # Title
     title = tk.Label(popupWindow, text = "Choose a USB Port", font=("Courier New ", 15))
-    title.pack(padx=10, pady=10)
+    title.pack(padx=40, pady=10)
 
     reloadButton = tk.Button(popupWindow, text="Reload Ports", command=lambda:loadPorts(False))
     reloadButton.pack(pady=5)

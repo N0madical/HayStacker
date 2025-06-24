@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os,glob,datetime,argparse
+import os,glob,datetime,argparse, time
 import base64,json
 import hashlib,codecs,struct
 import requests
@@ -25,35 +25,35 @@ def decode_tag(data):
     status = int.from_bytes(data[9:10], 'big')
     return {'lat': latitude, 'lon': longitude, 'conf': confidence, 'status':status}
 
-def getAuth(regenerate=False, second_factor='sms'):
+def getAuth(username, password, regenerate=False, second_factor='sms'):
     CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + "/auth.json"
     if os.path.exists(CONFIG_PATH) and not regenerate:
         with open(CONFIG_PATH, "r") as f: j = json.load(f)
     else:
-        mobileme = icloud_login_mobileme(second_factor=second_factor)
+        mobileme = icloud_login_mobileme(username, password, second_factor=second_factor)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
         with open(CONFIG_PATH, "w") as f: json.dump(j, f)
     return (j['dsid'], j['searchPartyToken'])
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-H', '--hours', help='only show reports not older than these hours', type=int, default=24)
-    parser.add_argument('-p', '--prefix', help='only use keyfiles starting with this prefix', default='')
-    parser.add_argument('-r', '--regen', help='regenerate search-party-token', action='store_true')
-    parser.add_argument('-t', '--trusteddevice', help='use trusted device for 2FA instead of SMS', action='store_true')
-    args = parser.parse_args()
+def request_reports(username: str, password: str, useSMS: bool, hours=0, regen=False):
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('-H', '--hours', help='only show reports not older than these hours', type=int, default=24)
+    # parser.add_argument('-p', '--prefix', help='only use keyfiles starting with this prefix', default='')
+    # parser.add_argument('-r', '--regen', help='regenerate search-party-token', action='store_true')
+    # parser.add_argument('-t', '--trusteddevice', help='use trusted device for 2FA instead of SMS', action='store_true')
+    # args = parser.parse_args()
 
     sq3db = sqlite3.connect(os.path.dirname(os.path.realpath(__file__)) + '/reports.db')
     sq3 = sq3db.cursor()
 
     privkeys = {}
     names = {}
-    for keyfile in glob.glob(os.path.dirname(os.path.realpath(__file__)) + '/' + args.prefix + '*.keys'):
+    for keyfile in glob.glob(os.path.join(os.path.abspath("keys"), '*.keys')):
         # read key files generated with generate_keys.py
         with open(keyfile) as f:
             hashed_adv = priv = ''
-            name = os.path.basename(keyfile)[len(args.prefix):-5]
+            name = os.path.basename(keyfile)[0:-5]
             for line in f:
                 key = line.rstrip('\n').split(': ')
                 if key[0] == 'Private key': priv = key[1]
@@ -64,12 +64,12 @@ if __name__ == "__main__":
                 names[hashed_adv] = name
             else: print(f"Couldn't find key pair in {keyfile}")
 
-    unixEpoch = int(datetime.datetime.now().strftime('%s'))
-    startdate = unixEpoch - (60 * 60 * args.hours)
+    unixEpoch = int(time.time())
+    startdate = unixEpoch - (60 * 60 * hours)
     data = { "search": [{"startDate": startdate *1000, "endDate": unixEpoch *1000, "ids": list(names.keys())}] }
 
     r = requests.post("https://gateway.icloud.com/acsnservice/fetch",
-            auth=getAuth(regenerate=args.regen, second_factor='trusted_device' if args.trusteddevice else 'sms'),
+            auth=getAuth(username, password, regenerate=regen, second_factor='trusted_device' if not useSMS else 'sms'),
             headers=generate_anisette_headers(),
             json=data)
     print(r)
@@ -112,3 +112,5 @@ if __name__ == "__main__":
     sq3.close()
     sq3db.commit()
     sq3db.close()
+
+request_reports("nomadicalyt@gmail.com", "xxtra!Ga1mn2", True, 0, True)
