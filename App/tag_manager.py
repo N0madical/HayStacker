@@ -1,7 +1,7 @@
 # Packages
 from tkinter import simpledialog, messagebox
 import tkinter as tk
-import threading, subprocess, sqlite3, os.path, platform
+import threading, subprocess, sqlite3, os.path, platform, sqlite3
 
 # Project  files
 import deploy
@@ -47,8 +47,10 @@ def loadTags():
         tags[name].pack()
         keys.close()
 
+
 def renameTag(oldName, newName):
     return
+
 
 anisette = None
 def getLocations(user='', pswd='', useSMS=False):
@@ -58,7 +60,7 @@ def getLocations(user='', pswd='', useSMS=False):
             global anisette
             print("started anisette")
             if platform.system() == "Windows":
-                anisette = subprocess.Popen(["wsl", "./anisette-v3-server/anisette-v3-server"])
+                anisette = subprocess.Popen("./anisette-v3-server/anisette-v3-server.exe")
             else:
                 anisette = subprocess.Popen("./anisette-v3-server/anisette-v3-server")
             anisette.wait()
@@ -66,7 +68,8 @@ def getLocations(user='', pswd='', useSMS=False):
             displayLocations()
 
         print("committing bruh")
-        # if os.path.exists("reports.db"): os.remove("reports.db")
+        # conn = sqlite3.connect('reports.db')
+        #
         # subprocess.run("sqlite3 reports.db \"CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished TEXT, lat INTEGER, lon INTEGER, link TEXT, statusCode INTEGER, conf INTEGER)\"")
 
         threading.Thread(target=start_anisette, daemon=True).start()

@@ -69,6 +69,8 @@ def authDialog():
     popupWindow = tk.Toplevel()
     popupWindow.title("Auth code")
 
+    result = tk.StringVar()
+
     header = tk.Label(popupWindow, text="Apple auth code", font=("Arial", 15))
     header.pack(side="top")
 
@@ -81,7 +83,8 @@ def authDialog():
     def submit():
         value = code.get()
         if len(value) == 6 and value.isdigit():
-            return value
+            result.set(value)
+            popupWindow.destroy()  # Close window
 
     codeHeader = tk.Label(popupWindow, text="6 numbers...", font=("Arial", 8))
     code = tk.Entry(popupWindow, width=6, font=("Arial", 15))
@@ -91,6 +94,10 @@ def authDialog():
 
     tryLogin = tk.Button(popupWindow, text="Submit", command=submit)
     tryLogin.pack(side="top", pady=(5, 10))
+
+    popupWindow.wait_window()  # Wait until window is destroyed
+    return result.get()
+
 
 set_callback(authDialog)
 

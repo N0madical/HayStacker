@@ -1,0 +1,42 @@
+{
+	"name": "anisette-v3-server",
+	"description": "Anisette server implementing SideStore's anisette v3 protocol",
+	"authors": [
+		"Dadoum"
+	],
+
+	"dependencies": {
+		"provision": {
+			"repository": "git+https://github.com/Dadoum/Provision.git",
+			"version": "fe879b1148767767481b9c2753d4fd741cb2d7fa"
+		},
+		"slf4d": "~>2.1.1",
+		"vibe-d:web": "~>0.9.8",
+		"vibe-d:http": "~>0.9.8"
+	},
+
+	"configurations": [
+		{
+			"name": "default",
+			"targetType": "executable"
+		},
+		{
+			"name": "static",
+			"targetType": "executable",
+			"lflags-linux-ldc": [
+				"-lz"
+			],
+			"dflags-ldc": [
+				"--link-defaultlib-shared=false"
+			],
+			"dflags-gdc": [
+				"-defaultlib=:libgphobos.a"
+			]
+		},
+		{
+			"targetType": "executable",
+			"targetPath": "bin",
+			"lflags": ["-L--subsystem=console"]
+		}
+	]
+}
