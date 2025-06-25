@@ -1,10 +1,7 @@
-import os.path, base64, tkinter as tk
-import sqlite3
-import subprocess
-
 # Packages
 from tkinter import simpledialog, messagebox
-import threading
+import tkinter as tk
+import threading, subprocess, sqlite3, os.path, platform
 
 # Project  files
 import deploy
@@ -60,14 +57,17 @@ def getLocations(user='', pswd='', useSMS=False):
         def start_anisette():
             global anisette
             print("started anisette")
-            anisette = subprocess.Popen(["wsl", "./anisette-v3-server/anisette-v3-server"])
+            if platform.system() == "Windows":
+                anisette = subprocess.Popen(["wsl", "./anisette-v3-server/anisette-v3-server"])
+            else:
+                anisette = subprocess.Popen("./anisette-v3-server/anisette-v3-server")
             anisette.wait()
             anisette = None
             displayLocations()
 
         print("committing bruh")
-        if os.path.exists("reports.db"): os.remove("reports.db")
-        subprocess.run("sqlite3 reports.db \"CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished TEXT, lat INTEGER, lon INTEGER, link TEXT, statusCode INTEGER, conf INTEGER)\"")
+        # if os.path.exists("reports.db"): os.remove("reports.db")
+        # subprocess.run("sqlite3 reports.db \"CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished TEXT, lat INTEGER, lon INTEGER, link TEXT, statusCode INTEGER, conf INTEGER)\"")
 
         threading.Thread(target=start_anisette, daemon=True).start()
 

@@ -1,11 +1,11 @@
-import runpy
+import runpy, os
 import tkinter as tk
 import write_ESP32, tag_manager
 from serial.tools import list_ports
 
 def createKey(name):
     open(f"{name}.yaml", "w").close()
-    runpy.run_path("FindMyIntegration\\generate_key.py")
+    runpy.run_path(os.path.join("FindMyIntegration", "generate_key.py"))
     tag_manager.loadTags()
 
 def getPortNames(advanced):

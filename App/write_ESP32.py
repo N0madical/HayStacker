@@ -1,8 +1,11 @@
 import tkinter as tk
-import base64, os
+import base64, os, platform
 from threadedCommand import run_command
 
-pathToVenv = os.path.abspath(os.path.join(".venv", "Scripts", "python.exe"))
+if platform.system() == "Windows":
+    pathToVenv = os.path.abspath(os.path.join(".venv", "Scripts", "python.exe"))
+else:
+    pathToVenv = os.path.abspath(os.path.join(".venv", "bin", "python"))
 
 def write(port, advKey):
     popupWindow = tk.Toplevel()
