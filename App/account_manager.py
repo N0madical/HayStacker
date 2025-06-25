@@ -5,8 +5,9 @@
 # I've made the most effort to make this script simple for your reading pleasure
 # ------
 
-import re #Regex matching, for moderating text box input
-import tkinter as tk #python tkinter GUI library
+import re # Regex matching, for moderating text box input
+import queue # Giving the user time to input responses to the script
+import tkinter as tk # python tkinter GUI library
 from FindMyIntegration.pypush_gsa_icloud import set_callback # Allows us to define a GUI for entering a 2FA code
 from tag_manager import getLocations # The function that retrieves and displays tag locations
 
@@ -66,36 +67,37 @@ def loginDialog(parent):
 
 
 def authDialog():
-    popupWindow = tk.Toplevel()
-    popupWindow.title("Auth code")
+    result = queue.Queue()
 
-    result = tk.StringVar()
+    def show():
+        popupWindow = tk.Toplevel()
+        popupWindow.title("Auth code")
 
-    header = tk.Label(popupWindow, text="Apple auth code", font=("Arial", 15))
-    header.pack(side="top")
+        header = tk.Label(popupWindow, text="Apple auth code", font=("Arial", 15))
+        header.pack(side="top")
 
-    def validate(event):
-        value = code.get()
-        value = re.sub("[^0-9]", "", value)
-        code.delete(0, tk.END)
-        code.insert(0, value[0:5])
+        def validate(event):
+            value = code.get()
+            value = re.sub("[^0-9]", "", value)
+            code.delete(0, tk.END)
+            code.insert(0, value[0:5])
 
-    def submit():
-        value = code.get()
-        if len(value) == 6 and value.isdigit():
-            result.set(value)
-            popupWindow.destroy()  # Close window
+        def submit():
+            value = code.get()
+            if len(value) == 6 and value.isdigit():
+                result.set(value)
+                popupWindow.destroy()  # Close window
 
-    codeHeader = tk.Label(popupWindow, text="6 numbers...", font=("Arial", 8))
-    code = tk.Entry(popupWindow, width=6, font=("Arial", 15))
-    code.bind('<Key>', validate)
-    codeHeader.pack(side="top", pady=(10, 0))
-    code.pack(side="top", pady=(0, 5))
+        codeHeader = tk.Label(popupWindow, text="6 numbers...", font=("Arial", 8))
+        code = tk.Entry(popupWindow, width=6, font=("Arial", 15))
+        code.bind('<Key>', validate)
+        codeHeader.pack(side="top", pady=(10, 0))
+        code.pack(side="top", pady=(0, 5))
 
-    tryLogin = tk.Button(popupWindow, text="Submit", command=submit)
-    tryLogin.pack(side="top", pady=(5, 10))
+        tryLogin = tk.Button(popupWindow, text="Submit", command=submit)
+        tryLogin.pack(side="top", pady=(5, 10))
 
-    popupWindow.wait_window()  # Wait until window is destroyed
+    tk._default_root.after(0, show)  # Wait until window is destroyed
     return result.get()
 
 
