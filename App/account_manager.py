@@ -85,7 +85,7 @@ def authDialog():
         def submit():
             value = code.get()
             if len(value) == 6 and value.isdigit():
-                result.set(value)
+                result.put(value)
                 popupWindow.destroy()  # Close window
 
         codeHeader = tk.Label(popupWindow, text="6 numbers...", font=("Arial", 8))
