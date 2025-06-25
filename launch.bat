@@ -6,7 +6,7 @@ echo Welcome to HayStacker^^!
 
 :pyCheck
 @REM Check if Python is installed. It is needed to run the app. Install it if now
-where python --version >nul 2>&1
+python --version 3>NUL
 if %errorlevel% neq 0 (
     call:pythonNotInstalled
 )  else (
