@@ -2,13 +2,13 @@ import os.path, base64, tkinter as tk
 import sqlite3
 import subprocess
 
-from serial.tools import list_ports
+# Packages
 from tkinter import simpledialog, messagebox
-from FindMyIntegration.request_reports import request_reports
 import threading
-from multiprocessing import Process
 
+# Project  files
 import deploy
+from FindMyIntegration.request_reports import request_reports
 from FindMyIntegration.generate_key import writeKey
 
 tags = {}

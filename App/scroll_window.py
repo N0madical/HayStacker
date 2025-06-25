@@ -1,6 +1,7 @@
 # Made using ChatGPT, slight modifications, and elbow grease, but sooooo helpful
 # For HayStacker by Aiden C
 
+# Packages
 import tkinter as tk
 from tkinter import ttk
 

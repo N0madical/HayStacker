@@ -1,10 +1,28 @@
-# Importing everything from tkinter module
-import os
-from shutil import which
+# -----
+# HayStacker project by Aiden C
+# Licensed under Creative Commons BY (Attribution)
+# Created June 22nd, 2025
+#
+# Intended for users to make custom item trackers
+# using the AirTag network on any platform
+#
+# Credits:
+# FindMy - Biemster - https://github.com/biemster/FindMy - Apple server querying
+# anisette-v3-server - Dadoum - https://github.com/Dadoum/anisette-v3-server - Apple server querying
+# OpenHaystack - seemoo-lab - https://github.com/seemoo-lab/openhaystack -
+#   ESP32 Firmware & AirTag network research 7 GUI design
+#
+# HayStacker, and it's creator, are not responsible for action taken by apple following
+# use of this software. Measures have been taken to ensure this project is safe for users.
+# I do not recommend using this commercially
+# -----
+
+# Packages
+import os, tkintermapview, subprocess
 from tkinter import *
+
+# Project Files
 import tag_manager, scroll_window, account_manager
-from tag_manager import newKey
-import tkintermapview, subprocess
 
 # main tkinter window
 root = Tk()
@@ -38,7 +56,7 @@ logo.pack(side="left", padx=(10,5))
 title = Label(headFrame, text = "HayStacker", font=("Lexend", 13), bg=UIBG)
 title.pack(side = "left")
 
-deployButton = Button(headFrame, image=plus_image, bg=UIBG, borderwidth=0, command=newKey)
+deployButton = Button(headFrame, image=plus_image, bg=UIBG, borderwidth=0, command=tag_manager.newKey)
 deployButton.pack(side = "right", padx=10)
 
 # deployButton = Button(headFrame, text = "Login to Apple", font=("Courier New ", 10), bg="white", command=lambda:account_manager.passwordDialog(root))

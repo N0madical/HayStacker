@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-import os,glob,datetime,argparse, time
+import os,glob,datetime,time
 import base64,json
-import hashlib,codecs,struct
+import hashlib,struct
 import requests
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import ec
 import sqlite3
 from os.path import dirname, join, abspath
 from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
-from multiprocessing import Process
 
 def sha256(data):
     digest = hashlib.new("sha256")
