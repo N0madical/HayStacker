@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 import sqlite3
 from os.path import dirname, join, abspath
 from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
+from tkinter import messagebox
 
 retryFunc = None
 
@@ -51,8 +52,12 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
     # args = parser.parse_args()
 
     try:
-        sq3db = sqlite3.connect(abspath("reports.db"), timeout=10)
-        sq3 = sq3db.cursor()
+        try:
+            sq3db = sqlite3.connect(abspath("reports.db"), timeout=10)
+            sq3 = sq3db.cursor()
+        except Exception as e:
+            messagebox.showerror("Error connecting to local database (reports.db). Is it in use?")
+            print("Sqlite error: ", e)
 
         privkeys = {}
         names = {}
@@ -87,6 +92,7 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
                 retryFunc()
             else:
                 print(f"HTTP error: {e}")
+                messagebox.showerror("Network error", f"Network error: {e}")
         res = json.loads(r.content.decode())['results']
         print(f'{r.status_code}: {len(res)} reports received.')
 

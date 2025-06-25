@@ -53,7 +53,7 @@ def loadTags():
             tags[name].pack()
             keys.close()
     except AttributeError:
-        print("Failed to capture parent")
+        raise AttributeError("Failed to capture parent")
 
 
 def renameTag(oldName, newName):
@@ -130,7 +130,7 @@ def displayLocations():
             mapUI.set_marker(item[3], item[4], text=item[0])
             tags[f"{item[0]}.keys"].status.configure(fg="green")
     except AttributeError:
-        print("Failed to connect to Map to add pin")
+        raise AttributeError("Failed to connect to Map to add pin")
 
 
 class Tag:
