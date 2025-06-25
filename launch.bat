@@ -3,21 +3,6 @@ setlocal enabledelayedexpansion
 
 echo Welcome to HayStacker^^!
 
-@REM ### Check if WSL is installed. It is needed to run linux commands on windows. Install it if not
-where wsl >nul 2>&1
-if %errorlevel% neq 0 (
-    call:wslNotInstalled
-) 
-
-wsl -l -q | findstr "U.b.u.n.t.u" >nul 2>nul
-if %errorlevel% equ 0 (
-    echo Ubuntu is installed in WSL, good
-) else (
-    echo ---
-    echo Ubuntu is not installed in WSL.
-    call:wslNotInstalled
-)
-
 
 @REM Check if Python is installed. It is needed to run the app. Install it if now
 where python >nul 2>&1
@@ -43,33 +28,6 @@ start winLaunch.vbs
 
 endlocal
 exit 0
-
-@rem ### What to do if WSL is not installed or improperly configured
-:wslNotInstalled
-echo ---
-echo WSL ^(Windows Subsystem for Linux^) Ubuntu is necessary for this project
-echo It allows Linux commands and programs to run on Windows
-echo This is necessary for the script that communicates with Apple's servers
-echo ---
-set /p name=Install? ^(y/n^):
-
-if /i "!name!" == "y" (
-    echo Installing WSL...
-    wsl --install -d Ubuntu
-    if !ERRORLEVEL! NEQ 0 (
-        echo ---
-        echo Administrator access is required or something else has gone wrong :(
-        echo Right click this .bat file and click 'run as admininstrator'
-        echo ---
-        pause
-        exit 126
-    ) 
-) else (
-        echo HayStacker dependency install declined...
-        pause
-        exit 0
-)
-goto :eof
 
 @rem ### What to do if Python is not installed
 :pythonNotInstalled
