@@ -59,7 +59,7 @@ title.pack(side = "left")
 deployButton = Button(headFrame, image=plus_image, bg=UIBG, borderwidth=0, command=tag_manager.newKey)
 deployButton.pack(side = "right", padx=10)
 
-# deployButton = Button(headFrame, text = "Login to Apple", font=("Courier New ", 10), bg="white", command=lambda:account_manager.passwordDialog(root))
+# deployButton = Button(headFrame, text = "Login to Apple", font=("Courier New ", 10), bg="white", command=lambda:account_manager.passwordDialog())
 # deployButton.pack(side = "right", padx=5)
 
 welcome = Label(UIFrame, text = "Your tags", font=("Lexend", 15), bg=UIBG)
@@ -97,7 +97,7 @@ def checkLogged():
     if os.path.exists("auth.json"):
         tag_manager.getLocations()
     else:
-        account_manager.loginDialog(root)
+        account_manager.loginDialog()
         loadButton.configure(text="", image=reload_img, background=parBG, borderwidth=0)
 
 loadButton = Button(ControlFrame, font=("Courier New ", 10), bg="white", borderwidth=1, command=checkLogged)
