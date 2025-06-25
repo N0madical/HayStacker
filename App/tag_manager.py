@@ -3,6 +3,7 @@ from tkinter import simpledialog, messagebox
 import tkinter as tk
 import threading, subprocess, os.path, platform, sqlite3
 
+
 # Project  files
 import deploy
 from FindMyIntegration.request_reports import request_reports
