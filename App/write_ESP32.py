@@ -1,6 +1,8 @@
 import tkinter as tk
-import subprocess, threading, base64, os
+import base64, os
 from threadedCommand import run_command
+
+pathToVenv = os.path.abspath(os.path.join(".venv", "Scripts", "python.exe"))
 
 def write(port, advKey):
     popupWindow = tk.Toplevel()
@@ -25,7 +27,7 @@ def write(port, advKey):
         output("--- Writing binary files to ESP32 ---")
         output("DO NOT UNPLUG OR CLOSE")
         try:
-            run_command(f"esptool --before no_reset --baud {baudRate} --port \"{port}\"\
+            run_command(f"{pathToVenv} -m esptool --before no_reset --baud {baudRate} --port \"{port}\"\
             write_flash 0x1000  \"{bootloader}\" \
                         0x8000  \"{partitionTable}\" \
                         0xe000  \"{keyPath}\" \
@@ -64,6 +66,6 @@ def write(port, advKey):
             try:
                 output("--- Erasing ESP32 ---")
                 output("DO NOT UNPLUG OR CLOSE")
-                run_command(f"esptool --after no_reset --port {port} erase_region 0x9000 0x5000", text_output, output, writeBinaries)
+                run_command(f"{pathToVenv} -m esptool --after no_reset --port {port} erase_region 0x9000 0x5000", text_output, output, writeBinaries)
             except Exception as e:
                 output("Failed to erase ESP32: " + str(e))
