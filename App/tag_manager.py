@@ -53,7 +53,7 @@ def loadTags():
                 readfile = keys.read().splitlines()
                 for line in readfile:
                     if "Advertisement key: " in line:
-                        advKey = keys.read().splitlines()[1].replace("Advertisement key: ", "").strip()
+                        advKey = line.replace("Advertisement key: ", "").strip()
                         tags[name] = Tag(parent, name.replace(".keys", ""), 0, advKey)
                 tags[name].pack()
                 keys.close()

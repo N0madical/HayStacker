@@ -4,8 +4,9 @@ setlocal enabledelayedexpansion
 echo Welcome to HayStacker^^!
 
 
+:pyCheck
 @REM Check if Python is installed. It is needed to run the app. Install it if now
-where python >nul 2>&1
+where python --version >nul 2>&1
 if %errorlevel% neq 0 (
     call:pythonNotInstalled
 )  else (
@@ -26,6 +27,7 @@ echo Launching!
 cd .\App
 start winLaunch.vbs
 
+pause
 endlocal
 exit 0
 
@@ -34,11 +36,13 @@ exit 0
 echo ---
 echo Python 3.13 is necessary for this project
 echo As it was built in Python, and packaging was avoided for modularity
-echo Python can be installed via the windows store
-echo Please visit: https://apps.microsoft.com/detail/9PNRBTZXMB4Z
+echo Python can be installed via the windows store, at https://apps.microsoft.com/detail/9PNRBTZXMB4Z
+echo To open the microsoft store, press enter
 echo ---
-pause
-goto :eof
+set /p DUMMY=Press ENTER to continue...
+python
+set /p DUMMY2=Press ENTER when Python is installed...
+goto :pyCheck
 
 @rem ### Build Python Venv
 :venvMissing
