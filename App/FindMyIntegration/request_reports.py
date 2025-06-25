@@ -9,6 +9,12 @@ import sqlite3
 from os.path import dirname, join, abspath
 from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
 
+retryFunc = None
+
+def setRetryFunc(funcIn):
+    global retryFunc
+    retryFunc = funcIn
+
 def sha256(data):
     digest = hashlib.new("sha256")
     digest.update(data)
@@ -74,6 +80,13 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
                 headers=generate_anisette_headers(),
                 json=data)
         print(r)
+        try:
+            r.raise_for_status()
+        except requests.HTTPError as e:
+            if r.status_code == 401:
+                retryFunc()
+            else:
+                print(f"HTTP error: {e}")
         res = json.loads(r.content.decode())['results']
         print(f'{r.status_code}: {len(res)} reports received.')
 
