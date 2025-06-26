@@ -44,14 +44,19 @@ def loadTags():
     for sel in tags.values():
         sel.container.destroy()
     tags = {}
+    if not os.path.exists("keys"): os.makedirs("keys")
     names = os.listdir("keys")
     try:
         for name in names:
-            keys = open(os.path.join("keys", name), "r")
-            advKey = keys.read().splitlines()[1].replace("Advertisement key: ", "").strip()
-            tags[name] = Tag(parent, name.replace(".keys", ""), 0, advKey)
-            tags[name].pack()
-            keys.close()
+            if ".keys" in name:
+                keys = open(os.path.join("keys", name), "r")
+                readfile = keys.read().splitlines()
+                for line in readfile:
+                    if "Advertisement key: " in line:
+                        advKey = line.replace("Advertisement key: ", "").strip()
+                        tags[name] = Tag(parent, name.replace(".keys", ""), 0, advKey)
+                tags[name].pack()
+                keys.close()
     except AttributeError:
         raise AttributeError("Failed to capture parent")
 

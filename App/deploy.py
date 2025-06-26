@@ -2,6 +2,7 @@ import runpy, os
 import tkinter as tk
 import write_ESP32, tag_manager
 from serial.tools import list_ports
+from tkinter import messagebox
 
 def createKey(name):
     open(f"{name}.yaml", "w").close()
@@ -73,8 +74,15 @@ def deployPopup(parent, tag):
     # Add control buttons
     deployButton = tk.Button(popupWindow, text="Deploy to USB Device", command=startDeploy)
 
-    closeButton = tk.Button(popupWindow, text="Cancel", command=popupWindow.destroy)
-    closeButton.pack(pady=5)
+    sidebyside = tk.Frame(popupWindow)
+
+    closeButton = tk.Button(sidebyside, text="Cancel", command=popupWindow.destroy)
+    closeButton.pack(side="right", padx=5)
+
+    helpButton = tk.Button(sidebyside, text="Help!", command=helpDialog)
+    helpButton.pack(side="left", padx=5)
+
+    sidebyside.pack(pady=5)
 
     # Bind listbox select
     listbox.bind("<<ListboxSelect>>", lambda e: startButtonDisplay()) # deployButton.pack(pady=5)
@@ -83,3 +91,24 @@ def deployPopup(parent, tag):
     popupWindow.grab_set()
     popupWindow.transient(parent) # Sets the main window as the parent
     popupWindow.wait_window(popupWindow) # Waits for the popup to be closed
+
+def helpDialog():
+    messagebox.showinfo("Help",
+                        """Help with ESP32 connection:
+
+The process of connecting to an ESP32 board often uses the COM ports. \
+This software is simply checking the avaliable COM ports, and Advanced mode \
+returns unfiltered results. If your ESP32 isn't there, it's likely \
+a connection problem between your PC and the ESP32 usb.
+
+Often, this is simply a driver issue. Look up your board's name and \
+\'Serial drivers\' or \'COM drivers\' on Google, and you'll probably find \
+instructions. On Espressif boards, for example, look up 'espressif com port driver' 
+
+To tripple-check that this software isn't the problem, open PowerShell and run:
+
+Get-WMIObject Win32_SerialPort
+
+If nothing shows up, it's a COM port connection problem :(
+If your board shows up, submit an issue on GitHub and I'll check it out!"""
+                        )
