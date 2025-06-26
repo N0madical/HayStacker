@@ -106,7 +106,7 @@ def authDialog():
 
 
 def retryLogin():
-    os.remove("auth.json")
+    # os.remove("auth.json")
     loginDialog()
 
 

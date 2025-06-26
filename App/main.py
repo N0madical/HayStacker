@@ -110,12 +110,28 @@ else:
 mapLabel = Label(ControlFrame, text = "Your accessories", font=("Lexend", 12))
 mapLabel.pack(side="left", padx=10)
 
+# The main map
 map_widget = tkintermapview.TkinterMapView(MapFrame, corner_radius=0)
 map_widget.set_position(38.4502257, -100.3839858)
 map_widget.set_zoom(4)
 map_widget.pack(side="top", fill="both", expand=True)
 
+
+# Change map to google maps when zoomed in
+def onZoom(event):
+    print(map_widget.zoom)
+    if map_widget.zoom >= 9 and "openstreetmap" in map_widget.tile_server:
+        map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+    elif map_widget.zoom < 9 and "google" in map_widget.tile_server:
+        print("sussery")
+        map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
+
+root.bind("<MouseWheel>", onZoom)
+
 tag_manager.setMapUI(map_widget)
+
+if os.path.exists("auth.json"):
+    tag_manager.getLocations()
 
 ######
 
@@ -123,8 +139,3 @@ tag_manager.loadTags()
 
 # Loop and run the window
 mainloop()
-
-try:
-    subprocess.run("wsl killall anisette-v3-server")
-except FileNotFoundError:
-    print("Anisette stopped")
