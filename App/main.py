@@ -124,4 +124,7 @@ tag_manager.loadTags()
 # Loop and run the window
 mainloop()
 
-subprocess.run("wsl killall anisette-v3-server")
+try:
+    subprocess.run("wsl killall anisette-v3-server")
+except FileNotFoundError:
+    print("Anisette stopped")
