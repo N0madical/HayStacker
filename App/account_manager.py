@@ -101,6 +101,8 @@ def authDialog():
         tryLogin = tk.Button(popupWindow, text="Submit", command=submit)
         tryLogin.pack(side="top", pady=(5, 10))
 
+        popupWindow.bind("<Return>", lambda x: submit())
+
     tk._default_root.after(0, show)  # Wait until window is destroyed
     return result.get()
 

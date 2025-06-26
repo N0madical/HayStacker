@@ -288,3 +288,6 @@ class Tag:
                 self.menu.grab_release()
 
         self.container.bind("<Button-3>", do_popup)
+        self.nameBox.bind("<Button-3>", do_popup)
+        self.title.bind("<Button-3>", do_popup)
+        self.subtitle.bind("<Button-3>", do_popup)

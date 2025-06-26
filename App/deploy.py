@@ -104,6 +104,8 @@ def deployPopup(parent, tag):
     # Bind listbox select
     listbox.bind("<<ListboxSelect>>", lambda e: startButtonDisplay()) # deployButton.pack(pady=5)
 
+    popupWindow.bind("<Return>", lambda x:startDeploy())
+
     # Optional: Make the popup modal (prevents interaction with main window)
     popupWindow.grab_set()
     popupWindow.transient(parent) # Sets the main window as the parent

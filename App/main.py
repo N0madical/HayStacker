@@ -66,7 +66,7 @@ welcome = Label(UIFrame, text = "Your tags", font=("Lexend", 15), bg=UIBG)
 welcome.pack(side = "top", pady=10)
 
 scrollable = scroll_window.ScrollableFrame(UIFrame)
-scrollable.pack(fill="both", expand=True, padx=10)
+scrollable.pack(fill="both", expand=True, padx=10, pady=(0,20))
 scrollable.canvas.configure(background=UIBG)
 scrollable.content_frame.configure(background=UIBG)
 
@@ -119,11 +119,9 @@ map_widget.pack(side="top", fill="both", expand=True)
 
 # Change map to google maps when zoomed in
 def onZoom(event):
-    print(map_widget.zoom)
     if map_widget.zoom >= 9 and "openstreetmap" in map_widget.tile_server:
         map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
     elif map_widget.zoom < 9 and "google" in map_widget.tile_server:
-        print("sussery")
         map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
 
 root.bind("<MouseWheel>", onZoom)
