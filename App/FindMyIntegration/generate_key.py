@@ -3,9 +3,32 @@
 # Adapted by Aiden C
 #####
 
-import os,base64,hashlib,random
+import os,base64,hashlib,random, pathlib
+import platform
+
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend
+
+def getKeysDir() -> pathlib.Path:
+    """
+    Returns a parent directory path
+    where persistent application data can be stored.
+
+    # linux: ~/.local/share
+    # macOS: ~/Library/Application Support
+    # windows: C:/Users/<USER>/AppData/Roaming
+    """
+
+    home = pathlib.Path.home()
+
+    if platform.system() == "Windows":
+        return home / "AppData/Local/HayStacker/keys"
+    elif platform.system() == "Linux":
+        return home / ".local/share/HayStacker/keys"
+    elif platform.system() == "Darwin":
+        return home / "Library/Application Support/HayStacker/keys"
+    else:
+        return pathlib.Path(__file__).parent.resolve() / "keys"
 
 # SHA256 Algorithim Wrapper
 def sha256(data):
@@ -29,7 +52,8 @@ def writeKey(name):
         print('there was a / in the b64 of the hashed pubkey :(, retrying')
         writeKey(name)
     else:
-        fname = os.path.join("keys", f"{name}.keys")
+        fpath = getKeysDir()
+        fname = os.path.join(fpath, f"{name}.keys")
         print(f'Writing {fname}')
 
         with open(fname, 'w') as f:

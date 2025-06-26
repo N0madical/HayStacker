@@ -9,6 +9,7 @@ import sqlite3
 from os.path import dirname, join, abspath
 from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
 from tkinter import messagebox
+from FindMyIntegration.generate_key import getKeysDir
 
 retryFunc = None
 
@@ -61,7 +62,7 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
 
         privkeys = {}
         names = {}
-        for keyfile in glob.glob(join(dirname(dirname(abspath(__file__))), "keys", '*.keys')):
+        for keyfile in glob.glob(join(getKeysDir(), '*.keys')):
             # read key files generated with generate_keys.py
             with open(keyfile) as f:
                 hashed_adv = priv = ''

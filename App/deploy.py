@@ -3,6 +3,7 @@ import tkinter as tk
 import write_ESP32, tag_manager
 from serial.tools import list_ports
 from tkinter import messagebox
+from repeatedTimer import repeatedTimer
 
 def createKey(name):
     open(f"{name}.yaml", "w").close()
@@ -15,7 +16,6 @@ def getPortNames(advanced):
         # Check if the port's hardware ID indicates a USB device
         # This is a common way to identify USB serial ports,
         # though the exact string can vary depending on the device.
-        print(port.description)
         if not advanced:
             if "USB" in port.hwid.upper() or "VID:PID" in port.hwid.upper():
                 usb_ports.append(port.description)
@@ -34,11 +34,23 @@ def deployPopup(parent, tag):
     # Create a Toplevel window for the popup
     popupWindow = tk.Toplevel()
     popupWindow.title("Deploy")
+    advanced = False
+    collected = []
 
-    def loadPorts(advanced):
-        listbox.delete(0, tk.END)
-        for item in getPortNames(advanced):
-            listbox.insert(tk.END, item)
+    def loadPorts():
+        nonlocal advanced
+        nonlocal collected
+        ports = getPortNames(advanced)
+        if ports != collected:
+            collected = ports
+            print(ports)
+            listbox.delete(0, tk.END)
+            for item in getPortNames(advanced):
+                listbox.insert(tk.END, item)
+
+    def loadAdvanced():
+        global advanced
+        advanced = True
 
     def startButtonDisplay():
         if listbox.curselection() != ():
@@ -51,17 +63,21 @@ def deployPopup(parent, tag):
             deployPort = getPortID(listbox.get(listbox.curselection()))
             advKey = tag.advKey
             write_ESP32.write(deployPort, advKey)
+            reloader.stop()
             popupWindow.destroy()
 
 
     # Title
     title = tk.Label(popupWindow, text = "Choose a USB Port", font=("Courier New ", 15))
-    title.pack(padx=40, pady=10)
+    title.pack(padx=40, pady=(10,2))
 
-    reloadButton = tk.Button(popupWindow, text="Reload Ports", command=lambda:loadPorts(False))
+    subtitle = tk.Label(popupWindow, text=f"To deploy tag: {tag.name}", font=("Courier New ", 10))
+    subtitle.pack(padx=40, pady=(2,10))
+
+    reloadButton = tk.Button(popupWindow, text="Reload Ports", command=lambda:loadPorts())
     reloadButton.pack(pady=5)
 
-    advancedButton = tk.Button(popupWindow, text="Load Advanced Ports", command=lambda: loadPorts(True))
+    advancedButton = tk.Button(popupWindow, text="Load Advanced Ports", command=lambda:loadAdvanced())
     advancedButton.pack(pady=5)
 
     # Create a Listbox within the popup
@@ -69,7 +85,8 @@ def deployPopup(parent, tag):
     listbox.pack(padx=10, pady=10, fill="x")
 
     # Add items to the Listbox
-    loadPorts(False)
+    loadPorts()
+    reloader = repeatedTimer(1, loadPorts).start()
 
     # Add control buttons
     deployButton = tk.Button(popupWindow, text="Deploy to USB Device", command=startDeploy)
@@ -87,10 +104,13 @@ def deployPopup(parent, tag):
     # Bind listbox select
     listbox.bind("<<ListboxSelect>>", lambda e: startButtonDisplay()) # deployButton.pack(pady=5)
 
+    popupWindow.bind("<Return>", lambda x:startDeploy())
+
     # Optional: Make the popup modal (prevents interaction with main window)
     popupWindow.grab_set()
     popupWindow.transient(parent) # Sets the main window as the parent
     popupWindow.wait_window(popupWindow) # Waits for the popup to be closed
+    reloader.stop()
 
 def helpDialog():
     messagebox.showinfo("Help",
