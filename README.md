@@ -6,7 +6,8 @@ HayStacker is a GUI application & framework for all platforms that lets _you_ cr
 Tags don't need to connect to a network and can be tracked on any system; Windows, Linux, and Mac!
 The goal is to allow the everyday person to create tracking tags to track everyday objects (Backpacks, Bicycles, Keys, etc), and to provide a simple, cross-platform GUI interface that makes this accessable to anyone.
 
-![haystacker](https://github.com/user-attachments/assets/f718a8f9-c6a8-4281-bd3d-0817d9db79b8)  
+![haystacker](https://github.com/user-attachments/assets/96e1e7d5-44c1-4303-841f-225541b3fb30)
+
 <br/>
 
 ## How is this possible? 💾
