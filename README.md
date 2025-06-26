@@ -50,6 +50,7 @@ macLinuxLaunch.sh
   - ![image](https://github.com/user-attachments/assets/3ba92a84-46b9-4610-b6ce-bab5fe2f132f)
   - If the COM port does not appear, make sure the proper serial drivers for your board are installed and your cord can transmit data
 - Watch as the software deploys!
+<br/>
 
 ### Locating tags
 - Click the `⟳` or `Login to Apple` button in the top-right
@@ -57,11 +58,12 @@ macLinuxLaunch.sh
   - ![image](https://github.com/user-attachments/assets/ec09e736-de21-4e0c-819e-809265dacef2)
   - ⚠️ If you have no Apple devices associated with your Apple ID, you may use SMS authentication. Keep in mind that SMS authentication is often faulty and Apple will randomly block SMS authentication requests
 - Your tags, if pinging and near an Apple device, will appear on the map.
+<br/>
 
 ### Flashing to other devices
 - Unfortunately, HayStacker only supports ESP32 via GUI right now.
-- Flashing other devices must be flashed via the command line, using python
-- Flashing supported binaries and flashing scripts are bundled with HayStacker at `HayStacker/App/FindMyIntegration/YourBoardType`
+- Flashing other devices must be done via the command line, using python
+- Supported binaries and flashing scripts are bundled with HayStacker at `HayStacker/App/FindMyIntegration/YourBoardType`
 - Any binary from the following sources can also be used:
   - https://github.com/seemoo-lab/openhaystack
   - https://github.com/biemster/FindMy
