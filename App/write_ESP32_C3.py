@@ -35,7 +35,7 @@ def write(port, advKey):
             print("Key Path: ", keyPath)
             print("OpenHaystack Binary: ", openhaystackBinary)
             run_command(f"{pathToVenv} -m esptool --before no_reset --baud {baudRate} --port \"{port}\"\
-            write_flash 0x1000  \"{bootloader}\" \
+            write_flash 0x0  \"{bootloader}\" \
                         0x8000  \"{partitionTable}\" \
                         0xe000  \"{keyPath}\" \
                         0x10000 \"{openhaystackBinary}\"",
@@ -46,7 +46,7 @@ def write(port, advKey):
             output("Failed to write to ESP32: " + str(e))
 
     #Main process
-    type = "ESP32Hibernate1min"
+    type = "ESP32Hibernate5min"
     try:
         decodedBytes = base64.b64decode(advKey)
         keyFile = open(os.path.join("FindMyIntegration", type, "build", "keyfile.key"), "wb")

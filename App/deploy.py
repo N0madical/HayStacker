@@ -1,6 +1,6 @@
 import runpy, os
 import tkinter as tk
-import write_ESP32, tag_manager
+import write_ESP32, tag_manager, write_ESP32_C3
 from serial.tools import list_ports
 from tkinter import messagebox
 from repeatedTimer import repeatedTimer
@@ -62,7 +62,7 @@ def deployPopup(parent, tag):
         if listbox.curselection() != ():
             deployPort = getPortID(listbox.get(listbox.curselection()))
             advKey = tag.advKey
-            write_ESP32.write(deployPort, advKey)
+            write_ESP32_C3.write(deployPort, advKey)
             reloader.stop()
             popupWindow.destroy()
 
