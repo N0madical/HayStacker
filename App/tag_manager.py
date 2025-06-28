@@ -100,6 +100,7 @@ def getLocations(user='', pswd='', useSMS=False):
                 anisette = subprocess.Popen("./anisette-v3-server/anisette-v3-server.exe")
             else:
                 anisette = subprocess.Popen("./anisette-v3-server/anisette-v3-server")
+            output, error = anisette.communicate()
             anisette.wait()
             anisette = None
             displayLocations()
@@ -162,6 +163,7 @@ def displayLocations():
     maxLat = 0
     total = len(locations.values())
     try:
+        mapUI.delete_all_marker()
         for item in locations.values():
             mapUI.set_marker(item[3], item[4], text=item[0], icon=ImageTk.PhotoImage(Image.open(os.path.join("media", "pin.png"))), icon_anchor='s')
             if time.time() - item[1] < 600:

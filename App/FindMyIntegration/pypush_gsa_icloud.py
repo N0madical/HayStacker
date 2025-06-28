@@ -168,6 +168,10 @@ def generate_anisette_headers():
         _ani_headers = a
     return _ani_headers
 
+def reset_headers():
+    global _ani_headers
+    _ani_headers = None
+
 def generate_meta_headers(serial="0", user_id=uuid.uuid4(), device_id=uuid.uuid4()):
     return {
         "X-Apple-I-Client-Time": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",

@@ -7,11 +7,12 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import ec
 import sqlite3
 from os.path import dirname, join, abspath
-from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
+from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers, reset_headers
 from tkinter import messagebox
 from FindMyIntegration.generate_key import getKeysDir
 
 retryFunc = None
+retryCount = 0
 
 def setRetryFunc(funcIn):
     global retryFunc
@@ -45,12 +46,8 @@ def getAuth(username='', password='', regenerate=False, second_factor='sms'):
 
 
 def request_reports(anisette, username='', password='', useSMS=False, hours=24, regen=False):
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('-H', '--hours', help='only show reports not older than these hours', type=int, default=24)
-    # parser.add_argument('-p', '--prefix', help='only use keyfiles starting with this prefix', default='')
-    # parser.add_argument('-r', '--regen', help='regenerate search-party-token', action='store_true')
-    # parser.add_argument('-t', '--trusteddevice', help='use trusted device for 2FA instead of SMS', action='store_true')
-    # args = parser.parse_args()
+    global retryCount
+    global retryFunc
 
     try:
         try:
@@ -90,7 +87,14 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
             r.raise_for_status()
         except requests.HTTPError as e:
             if r.status_code == 401:
-                retryFunc()
+                if retryCount < 3:
+                    reset_headers()
+                    retryCount += 1
+                    retryFunc(False)
+                    return
+                else:
+                    retryFunc(True)
+                    return
             else:
                 print(f"HTTP error: {e}")
                 messagebox.showerror("Network error", f"Network error: {e}")
@@ -134,6 +138,7 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
         sq3.close()
         sq3db.commit()
         sq3db.close()
+        retryCount = 0
     except Exception as e:
         print("Error getting reports:")
         raise e

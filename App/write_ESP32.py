@@ -42,9 +42,10 @@ def write(port, advKey):
             output("Failed to write to ESP32: " + str(e))
 
     #Main process
+    type = "ESP32Hibernate5min"
     try:
         decodedBytes = base64.b64decode(advKey)
-        keyFile = open(os.path.join("FindMyIntegration", "ESP32", "build", "keyfile.key"), "wb")
+        keyFile = open(os.path.join("FindMyIntegration", type, "build", "keyfile.key"), "wb")
         keyFile.write(decodedBytes)
         keyFile.close()
         output("Decoded Advertisement Key...")
@@ -52,12 +53,12 @@ def write(port, advKey):
         output("Failed to decode key: " + str(e))
     else:
         try:
-            path = os.path.abspath(os.path.join("FindMyIntegration", "ESP32", "build"))
+            path = os.path.abspath(os.path.join("FindMyIntegration", type, "build"))
             output("Located path")
             output(path)
-            bootloader = os.path.join(path, "bootloader.bin")
+            bootloader = os.path.join(path, "bootloader", "bootloader.bin")
             output("Located bootloader binary")
-            partitionTable = os.path.join(path, "partition-table.bin")
+            partitionTable = os.path.join(path, "partition_table", "partition-table.bin")
             output("Located partitionTable binary")
             openhaystackBinary = os.path.join(path, "openhaystack.bin")
             output("Located openhaystack binary")

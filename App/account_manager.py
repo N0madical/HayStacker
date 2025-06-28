@@ -9,8 +9,8 @@ import re # Regex matching, for moderating text box input
 import queue # Giving the user time to input responses to the script
 import os # For accessing the auth.json file
 import tkinter as tk # python tkinter GUI library
-from FindMyIntegration.request_reports import setRetryFunc # So we can define what happens if login fails
 from FindMyIntegration.pypush_gsa_icloud import set_callback # Allows us to define a GUI for entering a 2FA code
+from FindMyIntegration.request_reports import setRetryFunc
 from tag_manager import getLocations # The function that retrieves and displays tag locations
 
 # Main password dialog function
@@ -107,10 +107,12 @@ def authDialog():
     return result.get()
 
 
-def retryLogin():
-    # os.remove("auth.json")
-    loginDialog()
-
+def retryLogin(restart):
+    if restart:
+        os.remove("auth.json")
+        loginDialog()
+    else:
+        getLocations()
 
 set_callback(authDialog)
 setRetryFunc(retryLogin)

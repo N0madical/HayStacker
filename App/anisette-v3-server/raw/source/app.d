@@ -167,6 +167,14 @@ int main(string[] args) {
 	// Register SampleService as a web service
 	router.registerWebInterface(new AnisetteService());
 
+	router.get("/__shutdown__", (req, res) {
+		auto log = getLogger();
+		log.info("Received shutdown request...");
+		res.writeBody("Shutting down anisette.");
+		listener.stopListening();
+		exitEventLoop();
+	});
+
 	// Start up the HTTP server.
 	auto settings = new HTTPServerSettings;
 	settings.port = port;
@@ -178,7 +186,8 @@ int main(string[] args) {
 		settings.tlsContext.usePrivateKeyFile(privateKeyPath);
 	}
 
-	auto listener = listenHTTP(settings, router);
+	HTTPListener listener;
+	listener = listenHTTP(settings, router);
 
 	return runApplication(&args);
 }
