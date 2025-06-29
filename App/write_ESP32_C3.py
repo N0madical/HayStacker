@@ -29,6 +29,7 @@ def write(port, advKey):
     def writeBinaries():
         output("--- Writing binary files to ESP32 ---")
         output("DO NOT UNPLUG OR CLOSE")
+        output("Mode: ESP32-C3")
         try:
             print("Bootloader: ", bootloader)
             print("Partition Table: ", partitionTable)

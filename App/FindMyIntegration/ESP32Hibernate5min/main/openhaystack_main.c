@@ -50,7 +50,7 @@
 
 
 /** Device name for debugging */
-static const char * deviceName = "HaystackerTag: ";
+static const char * deviceName = "HaystackerTag";
 
 /** Random device address */
 static uint8_t randomAddress[6] = { 0xFF, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF };
@@ -117,12 +117,12 @@ int loadKey(uint8_t *dst, size_t size) {
 /** Setting BLE Advertisement address. First 6 bytes of the adv key are this address */
 /** Address stored in addr[5] */
 void setBLEAddress(uint8_t *addr, const uint8_t *public_key) {
-	addr[0] = public_key[0] | 0b11000000; //Set the first two bits to high (1) to signify random static address
-	addr[1] = public_key[1];
-	addr[2] = public_key[2];
-	addr[3] = public_key[3];
-	addr[4] = public_key[4]; 
-	addr[5] = public_key[5]; // A random static address used from the adv key
+	addr[0] = public_key[5];
+	addr[1] = public_key[4];
+	addr[2] = public_key[3];
+	addr[3] = public_key[2];
+	addr[4] = public_key[1]; 
+	addr[5] = public_key[0] | 0b11000000; //Set the first two bits to high (1) to signify random static address
 }
 
 
@@ -162,6 +162,8 @@ void host_task(void *param)
  */
 static void ble_app_on_sync(void)
 {
+    int rc;
+
     // 1) Load the public key
     static uint8_t public_key[28];
     if (loadKey(public_key, sizeof public_key) != ESP_OK) {
@@ -177,15 +179,24 @@ static void ble_app_on_sync(void)
 
     // Set the random static address
     ESP_LOGI(deviceName, "Setting random address");
-    ble_hs_id_set_rnd(randomAddress);
+    rc = ble_hs_id_set_rnd(randomAddress);
+    if (rc != 0) {
+        ESP_LOGE(deviceName, "ble_hs_id_set_rnd failed: %d", rc);
+        return;
+    }
 
+    uint8_t own_addr_type;
+    rc = ble_hs_id_infer_auto(0, &own_addr_type);
+    if (rc != 0) {
+        ESP_LOGE(deviceName, "ble_hs_id_infer_auto failed: %d", rc);
+        return;
+    }
 
     // Initialize raw data advertising
-    int rc = ble_gap_adv_set_data_raw(tagPayload, sizeof(tagPayload));
-
-    // Error catching
+    uint8_t adv_data_len = tagPayload[0];
+    rc = ble_gap_adv_set_data(&tagPayload[1], adv_data_len);
     if (rc) {
-        ESP_LOGE(deviceName, "BLE GAP Advertise raw data: ble_gap_adv_set_data_raw failed: %s", ble_hs_err_to_string(rc));
+        ESP_LOGE(deviceName, "ble_gap_adv_set_data failed: %d", rc);
         return;
     }
 
@@ -193,13 +204,14 @@ static void ble_app_on_sync(void)
     struct ble_gap_adv_params advp = { 0 };
     advp.conn_mode     = BLE_GAP_CONN_MODE_NON; // Classic Bluetooth is not supported
     advp.disc_mode     = BLE_GAP_DISC_MODE_NON; // general discoverable
-    advp.itvl_min      = 0x0021; //min advertise time 20s
-    advp.itvl_max      = 0x0021; //max advertise time 20s
-    advp.filter_policy = BLE_HS_ADV_FILT_ALLOW_SCAN_ANY_CON_ANY; // Allow any to pick up packet (no whitelist)
+    advp.itvl_min      = 0x0021; //min advertise time 20ms (0x0021 → 33 * 0.625 ms ≈ 20.6 ms)
+    advp.itvl_max      = 0x0021; //max advertise time 20ms (0x0021 → 33 * 0.625 ms ≈ 20.6 ms)
+    advp.channel_map   = 0x07; // Set advertising channel, 0x07 means “all three advertising channels (37, 38, 39).”
+    advp.filter_policy = 0; // Allow any to pick up packet (no whitelist)
 
     // Advertising settings:
     rc = ble_gap_adv_start(
-        BLE_OWN_ADDR_RANDOM, // use the static random address from above
+        own_addr_type,       // use the static random address from above
         NULL,                // no peer whitelist
         BLE_HS_FOREVER,      // advertise until we tell it to stop
         &advp,               // our config defined above
@@ -209,9 +221,11 @@ static void ble_app_on_sync(void)
 
     // Error catching
     if (rc) {
-        ESP_LOGE(deviceName, "ble_gap_adv_start failed: %s",
-                 ble_hs_err_to_string(rc));
+        ESP_LOGE(deviceName, "ble_gap_adv_start failed: %d", rc);
+        return;
     }
+
+    ESP_LOGI(deviceName, "Advertising started");
 }
 
 
@@ -255,8 +269,6 @@ void app_main(void)
 
     ESP_LOGI(deviceName, "Memory freed");
 
-    dump_partitions();
-
     // Bring up the controller + HCI for NimBLE
     ESP_ERROR_CHECK(nimble_port_init());
 
@@ -264,6 +276,7 @@ void app_main(void)
     ble_hs_cfg.reset_cb = NULL;                              // Unexpected controller reset
     ble_hs_cfg.sync_cb  = ble_app_on_sync;                   // When the host and controller are synced
     ble_hs_cfg.store_status_cb = ble_store_util_status_rr;   // Status of persistent storage
+
 
     // Start up the host task
     nimble_port_freertos_init(host_task);

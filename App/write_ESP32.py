@@ -46,7 +46,7 @@ def write(port, advKey):
             output("Failed to write to ESP32: " + str(e))
 
     #Main process
-    type = "ESP32Hibernate1min"
+    type = "ESP32LowPower"
     try:
         decodedBytes = base64.b64decode(advKey)
         keyFile = open(os.path.join("FindMyIntegration", type, "build", "keyfile.key"), "wb")

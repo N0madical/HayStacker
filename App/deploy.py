@@ -62,7 +62,7 @@ def deployPopup(parent, tag):
         if listbox.curselection() != ():
             deployPort = getPortID(listbox.get(listbox.curselection()))
             advKey = tag.advKey
-            write_ESP32_C3.write(deployPort, advKey)
+            write_ESP32.write(deployPort, advKey)
             reloader.stop()
             popupWindow.destroy()
 

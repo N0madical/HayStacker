@@ -11,5 +11,7 @@
   "idf.openOcdConfigs": [
     "board/esp32c3-builtin.cfg"
   ],
-  "C_Cpp.errorSquiggles": "disabled"
+  "C_Cpp.errorSquiggles": "disabled",
+  "idf.flashType": "JTAG",
+  "idf.portWin": "COM5"
 }

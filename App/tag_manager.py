@@ -181,13 +181,14 @@ def displayLocations():
     except AttributeError:
         raise AttributeError("Failed to connect to Map to add pin")
 
-    mapUI.set_position(avgLong / total, avgLat / total)
-    # print((minLat - 1, minLong - 1), (maxLat + 1, maxLong + 1))
-    print(minLat, maxLat, minLong, maxLong)
-    boundsLevel = getBoundsZoomLevel(maxLat + 0.0005, maxLong + 0.0005, minLat - 0.0005, minLong - 0.0005)
-    if boundsLevel >= 9:
-        mapUI.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
-    mapUI.set_zoom(boundsLevel)
+    if total > 0:
+        mapUI.set_position(avgLong / total, avgLat / total)
+        # print((minLat - 1, minLong - 1), (maxLat + 1, maxLong + 1))
+        print(minLat, maxLat, minLong, maxLong)
+        boundsLevel = getBoundsZoomLevel(maxLat + 0.0005, maxLong + 0.0005, minLat - 0.0005, minLong - 0.0005)
+        if boundsLevel >= 9:
+            mapUI.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+        mapUI.set_zoom(boundsLevel)
     
 def getBoundsZoomLevel(max_lat, max_lon, min_lat, min_lon, map_width_px=1024, map_height_px=768):
     # Clamp latitudes to Mercator projection limits
