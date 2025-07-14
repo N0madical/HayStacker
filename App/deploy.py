@@ -1,6 +1,6 @@
 import runpy, os
 import tkinter as tk
-import write_ESP32, tag_manager
+import write_ESP32, tag_manager, write_ESP32_C3
 from serial.tools import list_ports
 from tkinter import messagebox, ttk
 from repeatedTimer import repeatedTimer
