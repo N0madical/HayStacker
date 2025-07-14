@@ -265,7 +265,7 @@ class Tag:
             else:
                 hourFormat = "%-I"
             if (time.time()- timeStamp) > 432000:
-                self.timeStamp = dt.strftime(f"%b %d, %Y at {hourFormat}:%M %p")
+                self.timeStamp = dt.strftime(f"%b %d, %Y")
             elif dt.date() == date.today():
                 self.timeStamp = dt.strftime(f"Today at {hourFormat}:%M %p")
             else:

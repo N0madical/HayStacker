@@ -2,7 +2,7 @@ import runpy, os
 import tkinter as tk
 import write_ESP32, tag_manager
 from serial.tools import list_ports
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from repeatedTimer import repeatedTimer
 
 def createKey(name):
@@ -30,12 +30,17 @@ def getPortID(name):
             return port.device
     return None
 
+
+# --------------------------------------- Initial USB Select dialog -------------------------------------------
+
 def deployPopup(parent, tag):
     # Create a Toplevel window for the popup
     popupWindow = tk.Toplevel()
     popupWindow.title("Deploy")
     advanced = False
     collected = []
+
+    question = tk.PhotoImage(file=os.path.join("media", "qmark.png"))
 
     def loadPorts():
         nonlocal advanced
@@ -44,65 +49,58 @@ def deployPopup(parent, tag):
         if ports != collected:
             collected = ports
             print(ports)
-            listbox.delete(0, tk.END)
+            portsList.option_clear()
             for item in getPortNames(advanced):
-                listbox.insert(tk.END, item)
+                portsList.option_add(tk.END, item)
 
     def loadAdvanced():
         global advanced
         advanced = True
 
-    def startButtonDisplay():
-        if listbox.curselection() != ():
-            deployButton.pack(pady=5)
-        else:
-            deployButton.pack_forget()
-
     def startDeploy():
-        if listbox.curselection() != ():
-            deployPort = getPortID(listbox.get(listbox.curselection()))
+        # print(portsList.get)
+        if portsList.selection_get() != ():
+            deployPort = getPortID(portsList.selection_get())
             advKey = tag.advKey
-            write_ESP32.write(deployPort, advKey)
             reloader.stop()
             popupWindow.destroy()
-
+            typeDialog(parent, tag, deployPort, advKey)
 
     # Title
-    title = tk.Label(popupWindow, text = "Choose a USB Port", font=("Courier New ", 15))
+    title = tk.Label(popupWindow, text = f"Deploy {tag.name}", font=("Courier New ", 15))
     title.pack(padx=40, pady=(10,2))
 
-    subtitle = tk.Label(popupWindow, text=f"To deploy tag: {tag.name}", font=("Courier New ", 10))
-    subtitle.pack(padx=40, pady=(2,10))
+    # Subtitle
+    subtitle = tk.Label(popupWindow, text=f"Choose a USB device", font=("Courier New ", 10))
+    subtitle.pack(padx=10, pady=(2,10))
 
-    reloadButton = tk.Button(popupWindow, text="Reload Ports", command=lambda:loadPorts())
-    reloadButton.pack(pady=5)
+    # Side-by-side buttons
+    controlFrame = tk.Frame(popupWindow)
+    controlFrame.pack(pady=5)
 
-    advancedButton = tk.Button(popupWindow, text="Load Advanced Ports", command=lambda:loadAdvanced())
-    advancedButton.pack(pady=5)
+    reloadButton = tk.Button(controlFrame, text="Reload", command=lambda:loadPorts())
+    reloadButton.pack(side="left", padx=5)
+
+    advancedButton = tk.Button(controlFrame, text="Show advanced", command=lambda:loadAdvanced())
+    advancedButton.pack(side="right", padx=5)
 
     # Create a Listbox within the popup
-    listbox = tk.Listbox(popupWindow)
-    listbox.pack(padx=10, pady=10, fill="x")
+    # port = tk.StringVar()
+    # portsList = ttk.OptionMenu(frameRight, port, "Select a port...")
+    # portsList.pack(padx=10, pady=10, fill="x")
+    portsList = tk.Listbox(popupWindow, width=30)
+    portsList.pack(pady=5)
 
     # Add items to the Listbox
     loadPorts()
     reloader = repeatedTimer(1, loadPorts).start()
 
     # Add control buttons
-    deployButton = tk.Button(popupWindow, text="Deploy to USB Device", command=startDeploy)
+    deployButton = tk.Button(popupWindow, text="Next", command=startDeploy)
+    deployButton.pack(pady=10)
 
-    sidebyside = tk.Frame(popupWindow)
-
-    closeButton = tk.Button(sidebyside, text="Cancel", command=popupWindow.destroy)
-    closeButton.pack(side="right", padx=5)
-
-    helpButton = tk.Button(sidebyside, text="Help!", command=helpDialog)
-    helpButton.pack(side="left", padx=5)
-
-    sidebyside.pack(pady=5)
-
-    # Bind listbox select
-    listbox.bind("<<ListboxSelect>>", lambda e: startButtonDisplay()) # deployButton.pack(pady=5)
+    helpButton = tk.Button(popupWindow, command=helpDialog, image=question, borderwidth=0)
+    helpButton.pack(pady=5)
 
     popupWindow.bind("<Return>", lambda x:startDeploy())
 
@@ -111,6 +109,43 @@ def deployPopup(parent, tag):
     popupWindow.transient(parent) # Sets the main window as the parent
     popupWindow.wait_window(popupWindow) # Waits for the popup to be closed
     reloader.stop()
+
+
+# ---------------------------------------- Type select dialog -------------------------------------------------
+
+def typeDialog(parent, tag, deployPort, advKey):
+
+    question = tk.PhotoImage(file=os.path.join("media", "qmark.png"))
+
+    def startDeploy():
+        write_ESP32.write(deployPort, advKey)
+
+    # Create a Toplevel window for the popup
+    popupWindow = tk.Toplevel()
+    popupWindow.title("Deploy")
+
+    # Title
+    title = tk.Label(popupWindow, text = f"Deploy {tag.name}", font=("Courier New ", 15))
+    title.pack(padx=40, pady=(10,2))
+
+    # Subtitle
+    subtitle = tk.Label(popupWindow, text=f"Preferences", font=("Courier New ", 10))
+    subtitle.pack(padx=10, pady=(2,10))
+
+    # Add control buttons
+    deployButton = tk.Button(popupWindow, text="Deploy", command=startDeploy)
+    deployButton.pack(pady=10)
+
+    helpButton = tk.Button(popupWindow, command=helpDialog2, image=question, borderwidth=0)
+    helpButton.pack(pady=5)
+
+    popupWindow.bind("<Return>", lambda x:startDeploy())
+
+    # Optional: Make the popup modal (prevents interaction with main window)
+    popupWindow.grab_set()
+    popupWindow.transient(parent) # Sets the main window as the parent
+    popupWindow.wait_window(popupWindow) # Waits for the popup to be closed
+
 
 def helpDialog():
     messagebox.showinfo("Help",
@@ -131,4 +166,11 @@ Get-WMIObject Win32_SerialPort
 
 If nothing shows up, it's a COM port connection problem :(
 If your board shows up, submit an issue on GitHub and I'll check it out!"""
+                        )
+
+def helpDialog2():
+    messagebox.showinfo("Help",
+                        """Help with ESP32 firmware selection:
+
+"""
                         )
