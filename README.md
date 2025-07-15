@@ -41,6 +41,111 @@ macLinuxLaunch.sh
 ```
 <br/>
 
+## Supported Firmware 💽
+
+<table>
+  <tr>
+    <td>
+      <b>Chip Name</b>
+    </td>
+    <td>
+      <b>Status</b>
+    </td>
+    <td>
+      <b>Options</b>
+    </td>
+    <td>
+     <b>Note</b>
+    </td>
+  </tr>
+
+  
+  <tr>
+    <td>
+      ESP32 Generic
+    </td>
+    <td>
+      Fully Supported
+    </td>
+    <td>
+      Constant ping, hibernate 5 minutes, sleep 2 seconds
+    </td>
+    <td>
+      Every board except for ESP32-C3 & S2 (Thanks to OpenHaystack)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ESP32 C3 & S2
+    </td>
+    <td>
+      Fully Supported
+    </td>
+    <td>
+      Constant ping, hibernate 5 minutes
+    </td>
+    <td>
+      Binary developed as part of HayStacker
+    </td>
+  </tr>
+
+
+  <tr>
+    <td>
+      Lenze_ST17H66
+    </td>
+    <td>
+      Manual Flashing
+    </td>
+    <td>
+      Constant ping
+    </td>
+    <td>
+      Copied from OpenHaystack
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      Telink_TLSR825X
+    </td>
+    <td>
+      Manual Flashing
+    </td>
+    <td>
+      Constant ping
+    </td>
+    <td>
+      Copied from OpenHaystack
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      WCH_ch592
+    </td>
+    <td>
+      Manual Flashing
+    </td>
+    <td>
+      Constant ping
+    </td>
+    <td>
+      Copied from OpenHaystack
+    </td>
+  </tr>
+</table>
+
+Note: Tag MAC addresses do not rotate, meaning using these tags can be tracked by local area bluetooth scanners
+
+The MAC address acts like a name for your device, so scanners could see your device's name in the coffee shop, and then
+see the same device name the next day in the grocery store, and know that specefic tag has gone from the coffee shop
+to the grocery store. They won't know your name or any other details, and this only works if they are monitoring a scanner
+within the range of your device's antenna (usually ~10 meters/30ft)
+
+<br/>
+
 ## How-to Guide 🧐
 
 ### Flashing an ESP32 Board
@@ -52,6 +157,7 @@ macLinuxLaunch.sh
 - Choose your COM port to deploy to
   - ![image](https://github.com/user-attachments/assets/3ba92a84-46b9-4610-b6ce-bab5fe2f132f)
   - If the COM port does not appear, make sure the proper serial drivers for your board are installed and your cord can transmit data
+- Choose a board type and firmware type
 - Watch as the software deploys!
 <br/>
 
