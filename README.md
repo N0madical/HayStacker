@@ -4,7 +4,7 @@
 ## What is HayStacker? 🪡
 HayStacker is a GUI application & framework for all platforms that lets _you_ create and track tags via Apple's FindMy network.
 Tags don't need to connect to a network and can be tracked on any system; Windows, Linux, and Mac!
-The goal is to allow the everyday person to create tracking tags to track everyday objects (Backpacks, Bicycles, Keys, etc), and to provide a simple, cross-platform GUI interface that makes this accessable to anyone.
+The goal is to allow the everyday person to create tracking tags to track everyday objects (Backpacks, Bicycles, Keys, etc), and to provide a simple, cross-platform GUI interface that makes this accessible to anyone.
 
 
 ![haystacker2](https://github.com/user-attachments/assets/ef3999bc-c521-4256-9ae6-2dd35a541c47)
@@ -14,14 +14,14 @@ The goal is to allow the everyday person to create tracking tags to track everyd
 
 ## How is this possible? 💾
 
-Thanks to the hard work and research by the folks over at Seemoo Lab, the basis for querying apple servers was established:
+Thanks to the hard work and research by the folks over at Seemoo Lab, the basis for querying Apple servers was established:
 - https://github.com/seemoo-lab/openhaystack
 
 Next, credit is given to Dadoum for the anisette-v3-server project and Biemster for the FindMy project. These two established the grounds for moving OpenHayStack's frameworks away from being MacOS-only:
 - https://github.com/Dadoum/anisette-v3-server
 - https://github.com/biemster/FindMy
 
-This project finishes the job off by porting all that hard work to cross-platform compatable Python, wrapping it all up in a nice little package, and developing a GUI. And here you are!  
+This project finishes the job off by porting all that hard work to cross-platform compatible Python, wrapping it all up in a nice little package, and developing a GUI. And here you are!  
 <br/>
 
 ## How can I install it? 🖥️
@@ -42,6 +42,8 @@ macLinuxLaunch.sh
 <br/>
 
 ## Supported Firmware 💽
+
+<b>Fun Fact!</b> This project includes the binary and/or readme for each type of firmware, meaning you can customize HayStacker tag behavior to your liking if you're willing to build the firmware yourself!
 
 <table>
   <tr>
@@ -140,7 +142,7 @@ macLinuxLaunch.sh
 Note: Tag MAC addresses do not rotate, meaning using these tags can be tracked by local area bluetooth scanners
 
 The MAC address acts like a name for your device, so scanners could see your device's name in the coffee shop, and then
-see the same device name the next day in the grocery store, and know that specefic tag has gone from the coffee shop
+see the same device name the next day in the grocery store, and know that specific tag has gone from the coffee shop
 to the grocery store. They won't know your name or any other details, and this only works if they are monitoring a scanner
 within the range of your device's antenna (usually ~10 meters/30ft)
 
@@ -163,7 +165,7 @@ within the range of your device's antenna (usually ~10 meters/30ft)
 
 ### Locating tags
 - Click the `⟳` or `Login to Apple` button in the top-right
-- Follow the log-in instructions. Your apple account is necessary to pull data from Apple servers.
+- Follow the log-in instructions. Your Apple account is necessary to pull data from Apple servers.
   - ![image](https://github.com/user-attachments/assets/ec09e736-de21-4e0c-819e-809265dacef2)
   - ⚠️ If you have no Apple devices associated with your Apple ID, you may use SMS authentication. Keep in mind that SMS authentication is often faulty and Apple will randomly block SMS authentication requests
 - Your tags, if pinging and near an Apple device, will appear on the map.
