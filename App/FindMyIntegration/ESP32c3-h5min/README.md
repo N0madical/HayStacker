@@ -1,6 +1,6 @@
-# HayStacker Firmware for ESP32
+# HayStacker Firmware for ESP32 ESP32 C3 & S2
 
-This project contains a PoC firmware for Espressif & Seeed ESP32-C3 & ESP32-C3S2 chips.
+This project contains a PoC firmware for Espressif & Seeed ESP32-C3 & ESP32-S2 chips.
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 
 
