@@ -43,7 +43,7 @@ macLinuxLaunch.sh
 
 ## Supported Firmware 💽
 
-<b>Fun Fact!</b> This project includes the binary and/or readme for each type of firmware, meaning you can customize HayStacker tag behavior to your liking!
+<b>Fun Fact!</b> This project includes the binary and/or readme for each type of firmware, meaning you can customize HayStacker tag behavior to your liking if you're willing to build the firmware yourself!
 
 <table>
   <tr>
