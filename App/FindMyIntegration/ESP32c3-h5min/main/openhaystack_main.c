@@ -301,7 +301,7 @@ void app_main(void)
 
 
     // Set time to wake up to 5 minutes
-    const int wakeup_seconds = 0.5 * 60;
+    const int wakeup_seconds = 5 * 60;
     esp_sleep_enable_timer_wakeup((uint64_t)wakeup_seconds * 1000000ULL);
 
 

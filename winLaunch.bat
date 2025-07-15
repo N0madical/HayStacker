@@ -27,7 +27,6 @@ echo Launching!
 cd .\App
 start winLaunch.vbs
 
-pause
 endlocal
 exit 0
 

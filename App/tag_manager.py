@@ -39,7 +39,7 @@ def setMapUI(mapIn):
     mapUI = mapIn
 
 def newKey():
-    keyName = simpledialog.askstring("New tag", "Please enter a name for the new tag:\nCannot contain \"/\\\"")
+    keyName = simpledialog.askstring("New tag", "Please enter a name for the new tag:")
     if checkName(keyName):
         try:
             writeKey(keyName)

@@ -1,9 +1,15 @@
+/** Standard C libraries for types, memory, booleans, and I/O. */
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "nvs_flash.h"
+/** ESP-IDF specific headers for: */
+//     Bluetooth and BLE operations
+//     Logging
+//     Power management (light sleep)
+//     System partitions (flash)
+//     Event handling and timers
 #include "esp_partition.h"
 #include "esp_bt.h"
 #include "esp_gap_ble_api.h"
@@ -12,11 +18,14 @@
 #include "esp_bt_main.h"
 #include "esp_bt_defs.h"
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "esp_sleep.h"
 #include "esp_event.h"
 #include "esp_timer.h"
+
+/** For real-time OS features (FreeRTOS tasks) and NVS (non-volatile storage, like reading the key from flash). */
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "nvs_flash.h"
 
 static const char* LOG_TAG = "open_haystack";
 
@@ -25,6 +34,7 @@ static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
 
 /** Random device address */
 static esp_bd_addr_t rnd_addr = { 0xFF, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF };
+
 
 /** Advertisement payload */
 static uint8_t adv_data[31] = {
@@ -39,6 +49,7 @@ static uint8_t adv_data[31] = {
 	0x00, /* First two bits */
 	0x00, /* Hint (0x00) */ 
 };
+
 
 /* https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/bluetooth/esp_gap_ble.html#_CPPv420esp_ble_adv_params_t */
 static esp_ble_adv_params_t ble_adv_params = {
@@ -62,15 +73,19 @@ static esp_ble_adv_params_t ble_adv_params = {
     .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
 };
 
+
+/* Bluetooth event handler */
 static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
     esp_err_t err;
 
     switch (event) {
+        // Case for advertising data operation success status 
         case ESP_GAP_BLE_ADV_DATA_RAW_SET_COMPLETE_EVT:
             esp_ble_gap_start_advertising(&ble_adv_params);
             break;
 
+        // Case advertising start operation success status 
         case ESP_GAP_BLE_ADV_START_COMPLETE_EVT:
             //adv start complete event to indicate adv start successfully or failed
             if ((err = param->adv_start_cmpl.status) != ESP_BT_STATUS_SUCCESS) {
@@ -79,7 +94,8 @@ static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
                 ESP_LOGI(LOG_TAG, "advertising has started.");
             }
             break;
-
+        
+        // Case for advertising stop operation success status 
         case ESP_GAP_BLE_ADV_STOP_COMPLETE_EVT:
             if ((err = param->adv_stop_cmpl.status) != ESP_BT_STATUS_SUCCESS){
                 ESP_LOGE(LOG_TAG, "adv stop failed: %s", esp_err_to_name(err));
@@ -93,6 +109,8 @@ static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
     }
 }
 
+
+// Check if advertising key partition and file are present */
 int load_key(uint8_t *dst, size_t size) {
     const esp_partition_t *keypart = esp_partition_find_first(0x40, 0x00, "key");
     if (keypart == NULL) {
@@ -107,15 +125,20 @@ int load_key(uint8_t *dst, size_t size) {
     return status;
 }
 
+
+/* Setting BLE address. First 6 bytes of the adv key are this address */
 void set_addr_from_key(esp_bd_addr_t addr, uint8_t *public_key) {
-	addr[0] = public_key[0] | 0b11000000;
+	addr[0] = public_key[0] | 0b11000000; //Set the first two bits to high (1) to signify random static address
 	addr[1] = public_key[1];
 	addr[2] = public_key[2];
 	addr[3] = public_key[3];
-	addr[4] = public_key[4];
-	addr[5] = public_key[5];
+	addr[4] = public_key[4]; // A random static address generated from the adv key is used so that
+	addr[5] = public_key[5]; // the tag can't be tracked by its MAC address using BLE scanners
 }
 
+
+/* Genereate a decryptable advertising payload */
+/* Can be decrypted by the private key stored in the key's .keys file */
 void set_payload_from_key(uint8_t *payload, uint8_t *public_key) {
     /* copy last 22 bytes */
 	memcpy(&payload[7], &public_key[6], 22);
@@ -123,10 +146,14 @@ void set_payload_from_key(uint8_t *payload, uint8_t *public_key) {
 	payload[29] = public_key[0] >> 6;
 }
 
+
+/* Code to run on ESP32 start */
 void app_main(void)
-{
+{   
+
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT));
+
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     esp_bt_controller_init(&bt_cfg);
     esp_bt_controller_enable(ESP_BT_MODE_BLE);
@@ -162,21 +189,26 @@ void app_main(void)
         return;
     }
     ESP_LOGI(LOG_TAG, "application initialized");
-    
-    while (true) {
-	    
-        // Goto sleep for 1.9 seconds
-        esp_sleep_enable_timer_wakeup(1900000);
-        ESP_LOGE(LOG_TAG, "Entering light sleep");
 
-        // Enter sleep mode 
-        esp_light_sleep_start();
-        
-        // Execution continues here after wakeup
-        ESP_LOGE(LOG_TAG, "Returned from light sleep");
-        
-        // Lets transmit a couple of times
-        vTaskDelay(10);
-    }
+    // Let tag advertise a couple times
+    // Because the bluetooth controller handles advertising,
+    // Pausing the main thread will not pause advertising
+    vTaskDelay(pdMS_TO_TICKS(10000)); // Advertise for 10 seconds
+
+    // Once tag has advertised, disable bluetooth for hibernate
+    esp_bluedroid_disable();
+    esp_bluedroid_deinit();
+    esp_bt_controller_disable();
+    esp_bt_controller_deinit();
+ 
+    // Enter hibernate mode for 5 minutes
+    ESP_LOGI(LOG_TAG, "Entering hibernation");
+
+    // Set time to wake up
+    const int wakeup_seconds = 5 * 60;
+    esp_sleep_enable_timer_wakeup((uint64_t)wakeup_seconds * 1000000ULL);
+
+    // Rest, my sweet child
+    esp_deep_sleep_start();
     
 }
