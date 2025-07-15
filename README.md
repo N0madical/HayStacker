@@ -104,7 +104,7 @@ macLinuxLaunch.sh
       Constant ping
     </td>
     <td>
-      Copied from OpenHaystack
+      Copied from FindMy
     </td>
   </tr>
 
@@ -119,7 +119,7 @@ macLinuxLaunch.sh
       Constant ping
     </td>
     <td>
-      Copied from OpenHaystack
+      Copied from FindMy
     </td>
   </tr>
 
@@ -134,7 +134,7 @@ macLinuxLaunch.sh
       Constant ping
     </td>
     <td>
-      Copied from OpenHaystack
+      Copied from FindMy
     </td>
   </tr>
 </table>
