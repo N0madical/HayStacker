@@ -13,5 +13,6 @@
   ],
   "C_Cpp.errorSquiggles": "disabled",
   "idf.flashType": "JTAG",
-  "idf.portWin": "COM5"
+  "idf.portWin": "COM5",
+  "idf.monitorPort": "/dev/ttyACM0"
 }

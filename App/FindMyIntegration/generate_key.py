@@ -48,13 +48,16 @@ def writeKey(name):
     adv_b64 = base64.b64encode(adv_bytes).decode("ascii")
     s256_b64 = base64.b64encode(sha256(adv_bytes)).decode("ascii")
 
-    if '/' in s256_b64[:7] or '\\' in s256_b64[:7]:
+    if ('/' in s256_b64[:7] or '/' in adv_b64 or '/' in priv_b64
+            or '\\' in s256_b64[:7] or '\\' in adv_b64 or '\\' in priv_b64):
         print('there was a / in the b64 of the hashed pubkey :(, retrying')
         writeKey(name)
     else:
         fpath = getKeysDir()
         fname = os.path.join(fpath, f"{name}.keys")
         print(f'Writing {fname}')
+
+        print(adv_b64)
 
         with open(fname, 'w') as f:
             f.write('Private key: %s\n' % priv_b64)
