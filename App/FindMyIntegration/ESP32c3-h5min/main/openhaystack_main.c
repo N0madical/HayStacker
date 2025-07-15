@@ -79,10 +79,11 @@ static uint8_t tagPayload[31] = {
 	0x4c, 0x00, /* Company ID (Apple) */
 	0x12, 0x19, /* Offline Finding type and length */
 	0x00, /* State */
+    /* [7–28] 22‑byte public‑key fragment, to be filled at runtime */
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, /* First two bits */
+	0x00, /* First two bits of byte 0 of the public key */
 	0x00, /* Hint (0x00) */ 
 };
 
@@ -193,8 +194,8 @@ static void ble_app_on_sync(void)
     }
 
     // Initialize raw data advertising
-    uint8_t adv_data_len = tagPayload[0];
-    rc = ble_gap_adv_set_data(&tagPayload[1], adv_data_len);
+    uint8_t adv_data_len = sizeof(tagPayload);
+    rc = ble_gap_adv_set_data(&tagPayload[0], adv_data_len);
     if (rc) {
         ESP_LOGE(deviceName, "ble_gap_adv_set_data failed: %d", rc);
         return;

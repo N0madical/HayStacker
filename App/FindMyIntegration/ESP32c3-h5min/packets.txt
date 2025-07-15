@@ -1,0 +1,24 @@
+> HCI Event: LE Meta Event (0x3e) plen 56                                               #761 [hci0] 32.500062
+      LE Extended Advertising Report (0x0d)
+        Num reports: 1
+        Entry 0
+          Event type: 0x0010
+            Props: 0x0010
+              Use legacy advertising PDUs
+            Data status: Complete
+          Legacy PDU Type: ADV_NONCONN_IND (0x0010)
+          Address type: Random (0x01)
+          Address: ED:8E:5D:33:7E:6A (Static)
+          Primary PHY: LE 1M
+          Secondary PHY: No packets
+          SID: no ADI field (0xff)
+          TX power: 127 dBm
+          RSSI: -4 dBm (0xfc)
+          Periodic advertising interval: 0.00 msec (0x0000)
+          Direct address type: Public (0x00)
+          Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
+          Data length: 0x1e
+        ff 4c 00 12 19 00 0e d3 cd 43 13 69 0f 8e 99 dc  .L.......C.i....
+        06 7e ae e4 54 5c 4c d6 0a 81 9d 70 02 00        .~..T\L....p..  
+        ff 4c 00 12 19 00 0e d3 cd 43 13 69 0f 8e 99 dc  .L.......C.i....
+        06 7e ae e4 54 5c 4c d6 0a 81 9d 70 02 00        .~..T\L....p..  

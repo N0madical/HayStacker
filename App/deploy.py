@@ -4,6 +4,7 @@ import write_ESP32, tag_manager, write_ESP32_C3
 from serial.tools import list_ports
 from tkinter import messagebox, ttk
 from repeatedTimer import repeatedTimer
+from config import firmwareOptions
 
 def createKey(name):
     open(f"{name}.yaml", "w").close()
@@ -49,9 +50,9 @@ def deployPopup(parent, tag):
         if ports != collected:
             collected = ports
             print(ports)
-            portsList.option_clear()
+            portsList.delete(0, tk.END)
             for item in getPortNames(advanced):
-                portsList.option_add(tk.END, item)
+                portsList.insert(tk.END, item)
 
     def loadAdvanced():
         global advanced
@@ -59,7 +60,7 @@ def deployPopup(parent, tag):
 
     def startDeploy():
         # print(portsList.get)
-        if portsList.selection_get() != ():
+        if portsList.curselection() != ():
             deployPort = getPortID(portsList.selection_get())
             advKey = tag.advKey
             reloader.stop()
@@ -85,10 +86,7 @@ def deployPopup(parent, tag):
     advancedButton.pack(side="right", padx=5)
 
     # Create a Listbox within the popup
-    # port = tk.StringVar()
-    # portsList = ttk.OptionMenu(frameRight, port, "Select a port...")
-    # portsList.pack(padx=10, pady=10, fill="x")
-    portsList = tk.Listbox(popupWindow, width=30)
+    portsList = tk.Listbox(popupWindow, selectmode=tk.SINGLE, width=30)
     portsList.pack(pady=5)
 
     # Add items to the Listbox
@@ -114,11 +112,20 @@ def deployPopup(parent, tag):
 # ---------------------------------------- Type select dialog -------------------------------------------------
 
 def typeDialog(parent, tag, deployPort, advKey):
+    print(tag, deployPort, advKey)
 
     question = tk.PhotoImage(file=os.path.join("media", "qmark.png"))
 
     def startDeploy():
-        write_ESP32.write(deployPort, advKey)
+        if (binList.get() != "") & (devList.get() != ""):
+            deployFunc = firmwareOptions[devList.get()][0]
+            firmwareLocation = firmwareOptions[devList.get()][1][binList.get()]
+            popupWindow.destroy()
+            deployFunc.write(firmwareLocation, deployPort, advKey)
+
+    def updateBinList(event):
+        binList.set("")
+        binList['values'] = list(firmwareOptions[devList.get()][1].keys())
 
     # Create a Toplevel window for the popup
     popupWindow = tk.Toplevel()
@@ -129,8 +136,23 @@ def typeDialog(parent, tag, deployPort, advKey):
     title.pack(padx=40, pady=(10,2))
 
     # Subtitle
-    subtitle = tk.Label(popupWindow, text=f"Preferences", font=("Courier New ", 10))
+    subtitle = tk.Label(popupWindow, text="Preferences", font=("Courier New ", 10))
     subtitle.pack(padx=10, pady=(2,10))
+
+    devLabel = tk.Label(popupWindow, text="What type is your device?", font=("Courier New ", 8))
+    devLabel.pack(padx=10, pady=(2, 0))
+    devType = tk.StringVar()
+    devList = ttk.Combobox(popupWindow, textvariable=devType, state='readonly')
+    devList.pack(padx=10, pady=(0,10), fill="x")
+
+    devList['values'] = list(firmwareOptions.keys())
+    devList.bind('<<ComboboxSelected>>', updateBinList)
+
+    binLabel = tk.Label(popupWindow, text="How should this tag operate?", font=("Courier New ", 8))
+    binLabel.pack(padx=10, pady=(2, 0))
+    binType = tk.StringVar()
+    binList = ttk.Combobox(popupWindow, textvariable=binType, state='readonly')
+    binList.pack(padx=10, pady=(0,10), fill="x")
 
     # Add control buttons
     deployButton = tk.Button(popupWindow, text="Deploy", command=startDeploy)

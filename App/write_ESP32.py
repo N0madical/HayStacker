@@ -7,7 +7,7 @@ if platform.system() == "Windows":
 else:
     pathToVenv = os.path.abspath(os.path.join(".venv", "bin", "python"))
 
-def write(port, advKey):
+def write(firmware, port, advKey):
     popupWindow = tk.Toplevel()
     popupWindow.title("Deploying...")
 
@@ -46,10 +46,9 @@ def write(port, advKey):
             output("Failed to write to ESP32: " + str(e))
 
     #Main process
-    type = "ESP32LowPower"
     try:
         decodedBytes = base64.b64decode(advKey)
-        keyFile = open(os.path.join("FindMyIntegration", type, "build", "keyfile.key"), "wb")
+        keyFile = open(os.path.join("FindMyIntegration", firmware, "build", "keyfile.key"), "wb")
         keyFile.write(decodedBytes)
         keyFile.close()
         output("Decoded Advertisement Key...")
@@ -57,7 +56,7 @@ def write(port, advKey):
         output("Failed to decode key: " + str(e))
     else:
         try:
-            path = os.path.abspath(os.path.join("FindMyIntegration", type, "build"))
+            path = os.path.abspath(os.path.join("FindMyIntegration", firmware, "build"))
             output("Located path")
             output(path)
             bootloader = os.path.join(path, "bootloader", "bootloader.bin")
