@@ -90,9 +90,11 @@ def request_reports(anisette, username='', password='', useSMS=False, hours=24, 
                 if retryCount < 3:
                     reset_headers()
                     retryCount += 1
+                    anisette.terminate()
                     retryFunc(False)
                     return
                 else:
+                    anisette.terminate()
                     retryFunc(True)
                     return
             else:

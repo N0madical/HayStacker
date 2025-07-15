@@ -10,6 +10,7 @@ else:
 def write(firmware, port, advKey):
     popupWindow = tk.Toplevel()
     popupWindow.title("Deploying...")
+    mac = ""
 
     baudRate = 921600
 
@@ -27,6 +28,8 @@ def write(firmware, port, advKey):
 
     # DO NOT RUN INDEPENDENTLY
     def writeBinaries():
+        nonlocal mac
+
         output("--- Writing binary files to ESP32 ---")
         output("DO NOT UNPLUG OR CLOSE")
         output("Mode: ESP32-C3")
@@ -52,6 +55,9 @@ def write(firmware, port, advKey):
         keyFile = open(os.path.join("FindMyIntegration", firmware, "build", "keyfile.key"), "wb")
         keyFile.write(decodedBytes)
         keyFile.close()
+        mac = decodedBytes.hex()[:12].upper()
+        mac = ":".join(mac[i:i+2] for i in range(0, len(mac), 2))
+
         output("Decoded Advertisement Key...")
     except Exception as e:
         output("Failed to decode key: " + str(e))
@@ -77,3 +83,5 @@ def write(firmware, port, advKey):
                 run_command(f"{pathToVenv} -m esptool --after no_reset --port {port} erase_region 0x9000 0x5000", text_output, output, writeBinaries)
             except Exception as e:
                 output("Failed to erase ESP32: " + str(e))
+
+    return mac

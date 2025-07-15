@@ -87,7 +87,7 @@ def deployPopup(parent, tag):
 
     # Create a Listbox within the popup
     portsList = tk.Listbox(popupWindow, selectmode=tk.SINGLE, width=30)
-    portsList.pack(pady=5)
+    portsList.pack(pady=5, padx=10, fill="x")
 
     # Add items to the Listbox
     loadPorts()
@@ -121,7 +121,8 @@ def typeDialog(parent, tag, deployPort, advKey):
             deployFunc = firmwareOptions[devList.get()][0]
             firmwareLocation = firmwareOptions[devList.get()][1][binList.get()]
             popupWindow.destroy()
-            deployFunc.write(firmwareLocation, deployPort, advKey)
+            mac = deployFunc.write(firmwareLocation, deployPort, advKey)
+            messagebox.showinfo("Success", "Deploying...\nMAC Address: " + mac + "\nPlease power cycle the ESP after completion!")
 
     def updateBinList(event):
         binList.set("")

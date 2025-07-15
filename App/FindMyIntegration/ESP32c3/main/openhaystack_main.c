@@ -282,30 +282,5 @@ void app_main(void)
     // Start up the host task
     nimble_port_freertos_init(host_task);
 
-    ESP_LOGI(deviceName, "Bluetooth host task started");
-
-    // Let tag advertise a couple times
-    // Because the bluetooth controller handles advertising,
-    // Pausing the main thread will not pause advertising
-    vTaskDelay(pdMS_TO_TICKS(10000)); // 10 seconds of advertising
-
-    
-    // ----- Hibernation time! -----
-    // Log
-    ESP_LOGI(deviceName, "Entering hibernation");
-
-
-    //Stop BLE ports
-    ESP_ERROR_CHECK(nimble_port_stop());
-    ESP_ERROR_CHECK(nimble_port_deinit());
-
-
-    // Set time to wake up to 5 minutes
-    const int wakeup_seconds = 0.5 * 60;
-    esp_sleep_enable_timer_wakeup((uint64_t)wakeup_seconds * 1000000ULL);
-
-
-    // Rest, my sweet child
-    esp_deep_sleep_start();
-    
+    ESP_LOGI(deviceName, "Bluetooth host task started! Give HayStacker a cookie");
 }

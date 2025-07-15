@@ -1,0 +1,9 @@
+build/**
+venv/**
+sdkconfig.old
+!build/
+!build/bootloader/
+!build/partition_table/
+!build/openhaystack.bin
+!build/bootloader/bootloader.bin
+!build/partition_table/partition-table.bin

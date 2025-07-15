@@ -1,5 +1,6 @@
 # Packages
 import math
+import string
 import time
 from tkinter import simpledialog, messagebox
 import tkinter as tk
@@ -17,6 +18,17 @@ parent = None
 locations = {}
 mapUI = None
 
+def checkName(nameIn):
+    if nameIn is not None and nameIn != "":
+        if not any(char in nameIn for char in ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]):
+            if len(nameIn) > 20:
+                messagebox.showinfo("I see you",
+                                "I like the long name lol, be aware that it might cause file errors "
+                                "but I'll only truncate it in the main UI :)")
+            return True
+        else:
+            messagebox.showerror("Name Error", "Name can't have one of these illegal characters:\n<>:\"/\\|?*")
+    return False
 
 def setParent(parentIn):
     global parent
@@ -26,27 +38,60 @@ def setMapUI(mapIn):
     global mapUI
     mapUI = mapIn
 
-
 def newKey():
-    keyName = simpledialog.askstring("New tag", "Please enter a name for the new tag:")
-    if keyName is not None and keyName != "":
+    keyName = simpledialog.askstring("New tag", "Please enter a name for the new tag:\nCannot contain \"/\\\"")
+    if checkName(keyName):
         try:
             writeKey(keyName)
         except FileExistsError:
             messagebox.showerror("Error", f"The key name '{keyName}' already exists")
+        except OSError:
+            messagebox.showerror("Error", f"The key name '{keyName}' was not a valid filename, Try another :(")
     loadTags()
 
-def delKey(name):
-    result = messagebox.askyesno("Delete tag", f"Are you sure you want to delete: {name.replace(".keys", "")}")
+def delKey(keyName):
+    result = messagebox.askyesno("Delete tag", f"Are you sure you want to delete: {keyName.replace(".keys", "")}")
     if result:
-        os.remove(os.path.join(getKeysDir(), name))
+        os.remove(os.path.join(getKeysDir(), keyName))
+
+        conn = sqlite3.connect('reports.db')
+        sq3 = conn.cursor()
+        sq3.execute("DELETE FROM reports WHERE id_short = ?", (keyName.replace(".keys", ""), ))
+        conn.commit()
+        sq3.close()
+        conn.close()
+
         loadTags()
+
+
+def renameKey(oldName):
+    keyName = simpledialog.askstring("New tag", f"Please enter a new name for: {oldName}")
+    if checkName(keyName):
+        try:
+            os.rename(os.path.join(getKeysDir(), (oldName+".keys")), os.path.join(getKeysDir(), (keyName+".keys")))
+
+            conn = sqlite3.connect('reports.db')
+            sq3 = conn.cursor()
+            sq3.execute("UPDATE reports SET id_short = ? WHERE id_short = ?", (keyName, oldName))
+            conn.commit()
+            sq3.close()
+            conn.close()
+        except FileExistsError:
+            messagebox.showerror("Error", f"The key name '{keyName}' already exists")
+        except OSError:
+            messagebox.showerror("Error", f"The key name '{keyName}' was not a valid filename, Try another :(")
+
+        loadTags()
+    else:
+        if keyName != "" and keyName is not None:
+            renameKey(oldName)
 
 # Loads tags from the local keys directory
 # On windows, keys are stored in %appdata%\local
 def loadTags():
     global tags
     global parent
+    print(tags)
     for sel in tags.values():
         sel.container.destroy()
     tags = {}
@@ -64,29 +109,15 @@ def loadTags():
                         tags[name] = Tag(parent, name.replace(".keys", ""), 0, 0, advKey)
                 tags[name].pack()
                 keys.close()
+        displayLocations()
     except AttributeError:
         raise AttributeError("Failed to capture parent")
 
-
-def renameTag(oldName):
-    keyName = simpledialog.askstring("New tag", f"Please enter a new name for: {oldName}")
-    if keyName is not None and keyName != "":
-        try:
-            os.rename(os.path.join(getKeysDir(), (oldName+".keys")), os.path.join(getKeysDir(), (keyName+".keys")))
-
-            conn = sqlite3.connect('reports.db')
-            sq3 = conn.cursor()
-            sq3.execute("UPDATE reports SET id_short = ? WHERE id_short = ?", (keyName, oldName))
-            conn.commit()
-            sq3.close()
-            conn.close()
-        except FileExistsError:
-            messagebox.showerror("Error", f"The key name '{keyName}' already exists")
-
-    loadTags()
-
-
 anisette = None
+
+def ignoreAnisette():
+    global anisette
+    anisette = None
 
 def getLocations(user='', pswd='', useSMS=False):
     """Queries the Apple server to get Tag locations. Writes locations to local database"""
@@ -161,23 +192,27 @@ def displayLocations():
     minLat = 0
     maxLong = 0
     maxLat = 0
-    total = len(locations.values())
+    total = 0
     try:
         mapUI.delete_all_marker()
         for item in locations.values():
-            mapUI.set_marker(item[3], item[4], text=item[0], icon=ImageTk.PhotoImage(Image.open(os.path.join("media", "pin.png"))), icon_anchor='s')
-            if time.time() - item[1] < 600:
-                tags[f"{item[0]}.keys"].setStatus(2)
+            if f"{item[0]}.keys" in tags:
+                total += 1
+                mapUI.set_marker(item[3], item[4], text=item[0], icon=ImageTk.PhotoImage(Image.open(os.path.join("media", "pin.png"))), icon_anchor='s')
+                if time.time() - item[1] < 600:
+                    tags[f"{item[0]}.keys"].setStatus(2)
+                else:
+                    tags[f"{item[0]}.keys"].setStatus(1)
+                tags[f"{item[0]}.keys"].setTimeStamp(item[1])
+                avgLong += item[3]
+                avgLat += item[4]
+                minLong = item[3] if minLong == 0 else min(minLong, item[3])
+                minLat = item[4] if minLat == 0 else min(minLat, item[4])
+                maxLong = item[3] if maxLong == 0 else max(maxLong, item[3])
+                maxLat = item[4] if maxLat == 0 else max(maxLat, item[4])
+                print(item[3], item[4])
             else:
-                tags[f"{item[0]}.keys"].setStatus(1)
-            tags[f"{item[0]}.keys"].setTimeStamp(item[1])
-            avgLong += item[3]
-            avgLat += item[4]
-            minLong = item[3] if minLong == 0 else min(minLong, item[3])
-            minLat = item[4] if minLat == 0 else min(minLat, item[4])
-            maxLong = item[3] if maxLong == 0 else max(maxLong, item[3])
-            maxLat = item[4] if maxLat == 0 else max(maxLat, item[4])
-            print(item[3], item[4])
+                print(f"{item[0]}.keys exists in database but corresponding file not found")
     except AttributeError:
         raise AttributeError("Failed to connect to Map to add pin")
 
@@ -224,6 +259,7 @@ def getBoundsZoomLevel(max_lat, max_lon, min_lat, min_lon, map_width_px=1024, ma
 
 class Tag:
     def __init__(self, parent: tk.Frame, name, status, timeStamp, advKey):
+        self.deploy_img = tk.PhotoImage(file=os.path.join("media", "deploy.png"))
         self.name = name
         self.status = status
         self.advKey = advKey
@@ -233,14 +269,18 @@ class Tag:
         self.nameBox = tk.Frame(self.container, bg="white")
         self.title = tk.Label(self.nameBox, text=f"{self.name}", font=("Courier New ", 12), bg="white")
         self.subtitle = tk.Label(self.nameBox, text=f"Last seen: Never", font=("Courier New ", 8), bg="white")
-        self.deployButton = tk.Button(self.container, text="Deploy", font=("Courier New ", 10), bg="white", command=lambda: deploy.deployPopup(parent, self))
+        self.deployButton = tk.Button(self.container, image=self.deploy_img, text="Deploy", font=("Courier New ", 10), bg="white", borderwidth=0, command=lambda: deploy.deployPopup(parent, self))
         self.menu = tk.Menu(self.container, tearoff=False)
-        self.menu.add_command(label="Rename tag", command=lambda: renameTag(self.name))
+        self.menu.add_command(label="Rename tag", command=lambda: renameKey(self.name))
         self.menu.add_command(label="Delete tag", command=lambda: delKey(self.name + ".keys"))
         self.menu.add_command(label="Copy advertisement key",
-                              command=lambda: self.container.clipboard_append(self.advKey))
+                              command=lambda: self.writeToClipboard(self.advKey))
         self.menu.add_command(label="Copy keyfile path",
-                              command=lambda: self.container.clipboard_append(getKeysDir() / (self.name+".keys")))
+                              command=lambda: self.writeToClipboard(getKeysDir() / (self.name+".keys")))
+
+    def writeToClipboard(self, value):
+        self.container.clipboard_clear()
+        self.container.clipboard_append(value)
 
     def updateStatusDot(self):
         if self.status == 2:
@@ -256,7 +296,7 @@ class Tag:
         self.updateStatusDot()
 
     def setName(self, newName: str):
-        renameTag(self.name, newName)
+        renameKey(self.name, newName)
 
     def setTimeStamp(self, timeStamp: int):
         try:
@@ -279,10 +319,9 @@ class Tag:
     def pack(self):
         self.container.pack(fill="x", pady=4, padx=20)
         self.statusDot.pack(side="left", padx=5)
-        self.nameBox.pack(side="left")
-        self.title.pack(side="top", anchor="nw")
+        self.nameBox.pack(side="left", fill="y")
+        self.title.pack(side="top", anchor="nw", pady=(2,0))
         self.subtitle.pack(side="top", anchor="sw")
-        self.deployButton.pack(side="right", padx=5)
 
         def do_popup(event):
             try:
@@ -290,7 +329,22 @@ class Tag:
             finally:
                 self.menu.grab_release()
 
+        def showDeploy(event):
+            self.deployButton.pack(side="right", padx=5, pady=5)
+            self.title.configure(text=self.name[:20])
+
+        def hideDeploy(event):
+            self.deployButton.pack_forget()
+            self.title.configure(text=self.name)
+
         self.container.bind("<Button-3>", do_popup)
         self.nameBox.bind("<Button-3>", do_popup)
         self.title.bind("<Button-3>", do_popup)
         self.subtitle.bind("<Button-3>", do_popup)
+
+        self.container.bind("<Enter>", showDeploy)
+        self.container.bind("<Leave>", hideDeploy)
+        self.nameBox.bind("<Enter>", showDeploy)
+        self.nameBox.bind("<Leave>", hideDeploy)
+        self.deployButton.bind("<Enter>", showDeploy)
+        self.deployButton.bind("<Leave>", hideDeploy)

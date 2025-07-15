@@ -11,7 +11,7 @@ import os # For accessing the auth.json file
 import tkinter as tk # python tkinter GUI library
 from FindMyIntegration.pypush_gsa_icloud import set_callback # Allows us to define a GUI for entering a 2FA code
 from FindMyIntegration.request_reports import setRetryFunc
-from tag_manager import getLocations # The function that retrieves and displays tag locations
+from tag_manager import getLocations, ignoreAnisette  # The function that retrieves and displays tag locations
 
 # Main password dialog function
 def loginDialog():
@@ -112,6 +112,7 @@ def retryLogin(restart):
         os.remove("auth.json")
         loginDialog()
     else:
+        ignoreAnisette()
         getLocations()
 
 set_callback(authDialog)

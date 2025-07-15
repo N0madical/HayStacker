@@ -12,6 +12,7 @@ firmwareOptions = {
         "Sleep 20 seconds" : "ESP32-LowPower",
     }],
     "ESP32 C3 & S2" : [write_ESP32_C3, {
+        "Constant Ping" : "ESP32c3",
         "Hibernate 5 minutes" : "ESP32c3-h5min",
     }]
 }
