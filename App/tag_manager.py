@@ -119,6 +119,23 @@ def ignoreAnisette():
     global anisette
     anisette = None
 
+def createDatabase():
+    conn = sqlite3.connect('reports.db')
+    sq3 = conn.cursor()
+    sq3.execute("CREATE TABLE IF NOT EXISTS reports ("
+    	"id_short TEXT, "
+    	"timestamp INTEGER, "
+    	"datePublished TEXT, "
+    	"lat INTEGER, "
+	"lon INTEGER, "
+    	"link TEXT, "
+	"statusCode INTEGER, "
+	"conf INTEGER, "
+	"UNIQUE(id_short, timestamp))")
+    sq3.close()
+    conn.commit()
+    conn.close()
+
 def getLocations(user='', pswd='', useSMS=False):
     """Queries the Apple server to get Tag locations. Writes locations to local database"""
 
@@ -138,25 +155,13 @@ def getLocations(user='', pswd='', useSMS=False):
 
         print("committing bruh")
 
-        conn = sqlite3.connect('reports.db')
-        sq3 = conn.cursor()
-        sq3.execute("CREATE TABLE IF NOT EXISTS reports ("
-                    "id_short TEXT, "
-                    "timestamp INTEGER, "
-                    "datePublished TEXT, "
-                    "lat INTEGER, "
-                    "lon INTEGER, "
-                    "link TEXT, "
-                    "statusCode INTEGER, "
-                    "conf INTEGER, "
-                    "UNIQUE(id_short, timestamp))")
-        sq3.close()
-        conn.commit()
-        conn.close()
+        createDatabase()
 
         threading.Thread(target=start_anisette, daemon=True).start()
 
-        t = threading.Timer(0.5, lambda: threading.Thread(target=request_reports, args=(anisette, user, pswd, useSMS), daemon=True).start())
+        print("Here's anisette:", anisette)
+
+        t = threading.Timer(1, lambda: threading.Thread(target=request_reports, args=(anisette, user, pswd, useSMS), daemon=True).start())
         t.start()
     else:
         print("Bruh wait lol")
@@ -348,3 +353,6 @@ class Tag:
         self.nameBox.bind("<Leave>", hideDeploy)
         self.deployButton.bind("<Enter>", showDeploy)
         self.deployButton.bind("<Leave>", hideDeploy)
+
+
+createDatabase()
