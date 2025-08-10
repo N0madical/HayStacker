@@ -1,0 +1,7 @@
+cryptography
+pycryptodome
+tkintermapview
+esptool
+pbkdf2
+srp
+pillow

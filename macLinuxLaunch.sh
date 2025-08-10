@@ -9,13 +9,8 @@ fi
 
 if ! [ -d "./App/.venv" ]; then
     python3 -m venv ./App/.venv
-    pydir="./App/.venv/bin/python"
-    $pydir -m pip install cryptography
-    $pydir -m pip install pycryptodome
-    $pydir -m pip install tkintermapview
-    $pydir -m pip install esptool
-    $pydir -m pip install pbkdf2
-    $pydir -m pip install srp
+    source ./App/.venv/bin/activate
+    pip install -r ./App/requirements.txt
 fi
 
 if [ -f "pleaseInstallPython3ToRun.thankyou" ]; then
