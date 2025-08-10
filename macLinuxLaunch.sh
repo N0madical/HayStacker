@@ -11,6 +11,11 @@ if ! [ -d "./App/.venv" ]; then
     python3 -m venv ./App/.venv
     source ./App/.venv/bin/activate
     pip install -r ./App/requirements.txt
+    if [ $? -ne 0 ]; then
+        echo "Failed to install requirements. Removing virtual environment."
+        rm -rf ./App/.venv
+        exit 1
+    fi
 fi
 
 if [ -f "pleaseInstallPython3ToRun.thankyou" ]; then
