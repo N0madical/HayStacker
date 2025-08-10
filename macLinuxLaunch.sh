@@ -8,7 +8,7 @@ if ! command -v python3; then
 fi
 
 if ! [ -d "./App/.venv" ]; then
-    python -m venv ./App/.venv
+    python3 -m venv ./App/.venv
     pydir="./App/.venv/bin/python"
     $pydir -m pip install cryptography
     $pydir -m pip install pycryptodome
