@@ -8,14 +8,14 @@ if ! command -v python3; then
 fi
 
 if ! [ -d "./App/.venv" ]; then
-    python -m venv ./App/.venv
-    pydir="./App/.venv/bin/python"
-    $pydir -m pip install cryptography
-    $pydir -m pip install pycryptodome
-    $pydir -m pip install tkintermapview
-    $pydir -m pip install esptool
-    $pydir -m pip install pbkdf2
-    $pydir -m pip install srp
+    python3 -m venv ./App/.venv
+    source ./App/.venv/bin/activate
+    pip install -r ./App/requirements.txt
+    if [ $? -ne 0 ]; then
+        echo "Failed to install requirements. Removing virtual environment."
+        rm -rf ./App/.venv
+        exit 1
+    fi
 fi
 
 if [ -f "pleaseInstallPython3ToRun.thankyou" ]; then

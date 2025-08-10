@@ -18,21 +18,29 @@
 # -----
 
 # Packages
-import os, tkintermapview, subprocess
+import os, tkintermapview
 from tkinter import *
 
 # Project Files
 import tag_manager, scroll_window, account_manager
 
+from PIL import Image, ImageTk
+
+def get_image(path):
+    tmp = Image.open(path)
+    return ImageTk.PhotoImage(tmp)
+
 # main tkinter window
 root = Tk()
 root.title("HayStacker")
 root.geometry("1000x500")
-icon_image = PhotoImage(file=os.path.join("media", "HayStacker64.png"))
+
+icon_image = get_image(os.path.join("media", "HayStacker64.png"))
 root.iconphoto(True, icon_image)
-logo_image = PhotoImage(file=os.path.join("media", "HayStackerLogo.png"))
-plus_image = PhotoImage(file=os.path.join("media", "plus.png"))
-reload_img = PhotoImage(file=os.path.join("media", "reload.png"))
+
+logo_image = get_image(os.path.join("media", "HayStackerLogo.png"))
+plus_image = get_image(os.path.join("media", "plus.png"))
+reload_img = get_image(os.path.join("media", "reload.png"))
 
 UIBG = "#E9DFE1"
 parBG = root.cget("bg")
