@@ -50,7 +50,7 @@ def newKey():
     loadTags()
 
 def delKey(keyName):
-    result = messagebox.askyesno("Delete tag", f"Are you sure you want to delete: {keyName.replace(".keys", "")}")
+    result = messagebox.askyesno("Delete tag", f"Are you sure you want to delete: {keyName.replace('.keys', '')}")
     if result:
         os.remove(os.path.join(getKeysDir(), keyName))
 
