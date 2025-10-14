@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3f20da8c-dade-465b-aa4c-c71bb63106e3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/.vscode/settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/flash_esp32.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/main/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/main/Kconfig.projbuild" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/main/component.mk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/main/openhaystack_main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/partitions.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32-h1min/sdkconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32c3-h5min/build/bootloader/bootloader.bin" beforeDir="false" afterPath="$PROJECT_DIR$/FindMyIntegration/ESP32c3-h5min/build/bootloader/bootloader.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32c3-h5min/build/openhaystack.bin" beforeDir="false" afterPath="$PROJECT_DIR$/FindMyIntegration/ESP32c3-h5min/build/openhaystack.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/ESP32c3-h5min/main/openhaystack_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/FindMyIntegration/ESP32c3-h5min/main/openhaystack_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/flash_esp32.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/main/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/main/Kconfig.projbuild" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/main/component.mk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/main/openhaystack_main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/partitions.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FindMyIntegration/strik3 openhaystack main Firmware-ESP32/sdkconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/reload.png" beforeDir="false" afterPath="$PROJECT_DIR$/media/reload.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tag_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/tag_manager.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2ypfeSgYjPHalxwjsT9O3Y3sLF4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.account_manager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.deploy.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pypush_gsa_icloud.executor&quot;: &quot;Run&quot;,
+    &quot;Python.request_reports.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scroll_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scroll_window.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tag_manager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.write_ESP32.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/nomad/Documents/GitHub/HayStacker/App&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\nomad\Documents\GitHub\HayStacker\App" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\nomad\Documents\GitHub\HayStacker\App\FindMyIntegration" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="HayStacker" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
+        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3f20da8c-dade-465b-aa4c-c71bb63106e3" name="Changes" comment="" />
+      <created>1750536531054</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750536531054</updated>
+      <workItem from="1750536532135" duration="6460000" />
+      <workItem from="1750545271345" duration="2805000" />
+      <workItem from="1750643957401" duration="12905000" />
+      <workItem from="1750700846408" duration="42436000" />
+      <workItem from="1750795906437" duration="5308000" />
+      <workItem from="1750801303940" duration="245000" />
+      <workItem from="1750801620882" duration="2408000" />
+      <workItem from="1750824047281" duration="4989000" />
+      <workItem from="1750903549914" duration="17442000" />
+      <workItem from="1751084899950" duration="8686000" />
+      <workItem from="1751143781119" duration="3420000" />
+      <workItem from="1752519885282" duration="26401000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/anisette-v3-server" />
+      <path value="$PROJECT_DIR$/anisette-v3-server/raw" />
+    </ignored-roots>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/HayStacker$scroll_window.coverage" NAME="scroll_window Coverage Results" MODIFIED="1750704190815" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$test.coverage" NAME="test Coverage Results" MODIFIED="1750915070990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$request_reports.coverage" NAME="request_reports Coverage Results" MODIFIED="1750748622026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/FindMyIntegration" />
+    <SUITE FILE_PATH="coverage/HayStacker$scroll_test.coverage" NAME="scroll_test Coverage Results" MODIFIED="1750703916957" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$pypush_gsa_icloud.coverage" NAME="pypush_gsa_icloud Coverage Results" MODIFIED="1750748597372" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/FindMyIntegration" />
+    <SUITE FILE_PATH="coverage/HayStacker$deploy.coverage" NAME="deploy Coverage Results" MODIFIED="1750650133277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$account_manager.coverage" NAME="account_manager Coverage Results" MODIFIED="1750744909445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$main.coverage" NAME="main Coverage Results" MODIFIED="1752562023697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$write_ESP32.coverage" NAME="write_ESP32 Coverage Results" MODIFIED="1750749949529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HayStacker$tag_manager.coverage" NAME="tag_manager Coverage Results" MODIFIED="1750915096374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
