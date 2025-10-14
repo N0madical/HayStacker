@@ -1,6 +1,0 @@
-# Ignoring sensitive file uploads
-keys
-auth.json
-reports.db
-__pycache__
-~
